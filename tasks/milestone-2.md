@@ -47,7 +47,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
   - DoD: `dependency_moveit` → one `dependency` finding; `fetch_dartsim` →
     a `fetch` finding (part of **SPEC-002 T1**).
 
-- [ ] **M2-04 — `patch` rule**
+- [x] **M2-04 — `patch` rule**
   - Spec: SPEC-002 §2 (patch).
   - `rules/patch.py`: `Hunk #\d+ FAILED`, `does not apply`, `rejects in file` →
     `patch`; title = patch/first failing file+hunk; `file`/`line` from
