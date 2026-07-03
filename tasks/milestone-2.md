@@ -55,7 +55,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
   - DoD: **SPEC-002 T4** — `patch_ogre-next` → `patch`, `file` =
     `OgreMathlibNEON.h`, hunk line 601 (golden-file check).
 
-- [ ] **M2-05 — `qa` rule + within-finding dedup**
+- [x] **M2-05 — `qa` rule + within-finding dedup**
   - Spec: SPEC-002 §2 (qa), §4 (within-finding collapse).
   - `rules/qa.py`: `ERROR: QA Issue:` / `Fatal QA errors were found` → `qa`;
     collapse the many near-identical per-symlink lines into one finding with a

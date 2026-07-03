@@ -20,15 +20,15 @@ _PATCH_NAME_RE = re.compile(r"([\w.+-]+\.patch)")
 
 
 def _match(failure: Failure, lines: list[LogLine]) -> bool:
-    if any(
+    # Match on patch-apply content, not merely the do_patch task: some do_patch
+    # failures are really QA failures ("Fatal QA errors ... Missing Upstream-Status
+    # in patch") and belong to the qa rule (content over task, SPEC-002 §2).
+    return any(
         _HUNK_RE.search(line.text)
         or "does not apply" in line.text
         or "rejects in file" in line.text
         for line in lines
-    ):
-        return True
-    # a do_patch task failure is a patch-phase failure even without hunk detail
-    return (failure.task or "") == "do_patch" and any(line.level == "ERROR" for line in lines)
+    )
 
 
 def _first_failing_hunk(lines: list[LogLine]) -> tuple[int | None, int | None, str | None]:
