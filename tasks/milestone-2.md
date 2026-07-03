@@ -17,7 +17,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
 
 ---
 
-- [ ] **M2-01 — Rule registry + analyze orchestration skeleton**
+- [x] **M2-01 — Rule registry + analyze orchestration skeleton**
   - Spec: SPEC-002 §1 (rule registry), §6 (Output).
   - `analyze/signatures.py`: `Rule` record + a module-level registry with a
     `register`/lookup API. `analyze/__init__.py`: `analyze(builds) -> Report`
