@@ -35,7 +35,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
   - DoD: **SPEC-005 T1** — the summary for the largest (2.1 MB) corpus report is
     under the default token budget.
 
-- [ ] **M3-03 — Markdown output (`--format md`)**
+- [x] **M3-03 — Markdown output (`--format md`)**
   - Spec: SPEC-005 §2.
   - Render a `Summary` to human/model-pasteable Markdown: build header
     (component/machine/distro/target/bitbake/branch), per-finding section with the

@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from .models import Finding, Report, Summary
+from .models import Build, Finding, Report, Summary
 
 CHARS_PER_TOKEN = 4  # rough token estimate (SPEC-005 §5 chars/4 heuristic)
 DEFAULT_BUDGET = 4000
@@ -89,3 +89,74 @@ def summarize(
         findings_omitted=findings_omitted,
         log_lines_dropped=log_lines_dropped,
     )
+
+
+def _finding_location(finding: Finding) -> str:
+    if not finding.file:
+        return ""
+    loc = finding.file + (f":{finding.line}" if finding.line else "")
+    return f" at {loc}"
+
+
+def _metadata_lines(build: Build | None, root: Finding | None) -> list[str]:
+    lines: list[str] = []
+    if build is None:
+        return lines
+    row1 = [
+        f"{label}: {value}"
+        for label, value in (
+            ("machine", build.machine),
+            ("distro", build.distro),
+            ("target", build.target_sys),
+        )
+        if value
+    ]
+    row2 = [
+        f"{label}: {value}"
+        for label, value in (("bitbake", build.bitbake_version), ("branch", build.branch_commit))
+        if value
+    ]
+    if row1:
+        lines.append("- " + " · ".join(row1))
+    if row2:
+        lines.append("- " + " · ".join(row2))
+    return lines
+
+
+def _truncation_note(summary: Summary) -> str | None:
+    parts = []
+    if summary.findings_omitted:
+        parts.append(f"{summary.findings_omitted} further findings omitted")
+    if summary.log_lines_dropped:
+        parts.append(f"{summary.log_lines_dropped} log lines dropped")
+    return f"({'; '.join(parts)})" if parts else None
+
+
+def to_markdown(summary: Summary) -> str:
+    """Render a `Summary` as human/model-pasteable Markdown (SPEC-005 §2)."""
+    root = summary.findings[0] if summary.findings else None
+    subject = (root.recipe if root and root.recipe else None) or (
+        summary.build.component if summary.build and summary.build.component else "build"
+    )
+    task_suffix = f" ({root.task})" if root and root.task else ""
+
+    lines = [f"# Yocto build failure — {subject}{task_suffix}"]
+    lines += _metadata_lines(summary.build, root)
+    lines.append("")
+
+    for index, finding in enumerate(summary.findings, start=1):
+        lines.append(
+            f"## Finding {index} — {finding.category}-error "
+            f"(confidence {finding.confidence:.2f})"
+        )
+        lines.append(f"Root cause: {finding.title}{_finding_location(finding)}")
+        lines.append("")
+        lines.append("```")
+        lines.extend(finding.evidence)
+        lines.append("```")
+        lines.append("")
+
+    note = _truncation_note(summary)
+    if note:
+        lines.append(note)
+    return "\n".join(lines).rstrip() + "\n"
