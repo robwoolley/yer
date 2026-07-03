@@ -81,7 +81,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
   - DoD: `yer summarize <fixture> --format json` validates; `--format md` emits
     Markdown; exit-code contract consistent with `analyze`.
 
-- [ ] **M3-08 — Budget verification + documented round-trip smoke**
+- [x] **M3-08 — Budget verification + documented round-trip smoke**
   - Spec: SPEC-005 T1, T6; roadmap M3 exit criteria.
   - A `slow`/corpus test asserting the 2.1 MB report summary is under budget; a
     **documented** manual round-trip (`yer summarize <sample> | claude -p

@@ -1,8 +1,8 @@
 # Quick Start
 
-> ⚠️ Implementation is not built yet — this describes the **target** developer
-> and CI experience defined by the specs. Track progress in
-> [roadmap.md](roadmap.md).
+> **Status:** `yer analyze` and `yer summarize` are implemented and tested.
+> `yer report --html` (M4) and SARIF (M5) are still the **target** experience
+> defined by the specs — track progress in [roadmap.md](roadmap.md).
 
 ## Install
 
@@ -37,16 +37,38 @@ yer analyze error-reports/*.txt --format sarif -o results.sarif   # (fast-follow
 
 ### Get a fix suggestion from Claude
 
-`yer` emits a compact, privacy-scrubbed, token-bounded summary. Pipe it to Claude:
+`yer` emits a compact, privacy-scrubbed, token-bounded summary (≤ ~4000 tokens by
+default, even for a 2 MB log). Pipe it to Claude:
 
 ```bash
-yer summarize error-reports/error_report_20260701180755.txt --for-llm \
+yer summarize error-reports/error_report_20260701180755.txt \
   | claude -p "You are a Yocto expert. Diagnose and propose a fix for this build failure."
 ```
 
-`--for-llm` prints Markdown by default; add `--format json` for a structured
-payload. `local.conf`/`auto.conf` are **excluded** unless you pass
-`--include-config` (redaction still applies).
+Markdown is the default; add `--format json` for a structured payload, `--budget
+<tokens>` to resize. `local.conf`/`auto.conf` are **excluded** unless you pass
+`--include-config` (secret + host-identity redaction still applies). Host-identity
+paths (`SSH_AUTH_SOCK`, `/<host>/<user>/<date>/…` build roots) are always redacted
+from evidence — the summary is safe to share.
+
+#### Round-trip smoke (SPEC-005 T6)
+
+Requires the [`claude`](https://claude.com/claude-code) CLI. Try one report per
+category and check the fix is plausible:
+
+```bash
+# pick reports of different failure categories from your build
+for r in \
+    error-reports/<a-configure-failure>.txt \
+    error-reports/<a-compile-failure>.txt \
+    error-reports/<a-patch-failure>.txt ; do
+  echo "=== $r ===";
+  yer summarize "$r" | claude -p "Diagnose this Yocto build failure and propose a fix.";
+done
+```
+
+`yer analyze <report>` first if you're unsure of a report's category (the finding
+category is printed per failure).
 
 ### Generate a static report/dashboard
 
