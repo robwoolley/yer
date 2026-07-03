@@ -94,7 +94,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
     deduped and ranked; first-error-as-root-cause verified on a sample; ordering
     is deterministic.
 
-- [ ] **M2-09 — `yer analyze`: text output, input resolution, exit codes**
+- [x] **M2-09 — `yer analyze`: text output, input resolution, exit codes**
   - Spec: SPEC-003 §1, §2, §3, §4; SPEC-000 FR8.
   - `cli.py` `analyze` subcommand: resolve inputs (SPEC-001), render `text`
     (rich if available; grouped by recipe, cascades nested; footer
