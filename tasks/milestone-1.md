@@ -15,7 +15,7 @@ stay **stdlib-only**; no CLI/render concerns.
 
 ---
 
-- [ ] **M1-01 — Ingest one report → `Build`**
+- [x] **M1-01 — Ingest one report → `Build`**
   - Spec: SPEC-001 §1 (parsing rules), data-format §"Failure object schema".
   - Load a single file; extension is opaque (detect via `json.loads`); map
     top-level + failure fields to `Build`/`Failure`; every field optional;
