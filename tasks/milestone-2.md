@@ -84,7 +84,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
     into one group with `occurrences == 2`; `Report.groups` populated
     deterministically.
 
-- [ ] **M2-08 — Ranking + root-cause vs cascade**
+- [x] **M2-08 — Ranking + root-cause vs cascade**
   - Spec: SPEC-002 §5.
   - Sort findings by `(severity_rank, phase_order, -confidence, recipe)` with
     `phase_order` fetch < patch < configure < compile < qa. Within one failure,

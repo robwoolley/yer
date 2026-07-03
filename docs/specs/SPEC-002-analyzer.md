@@ -95,3 +95,11 @@ and dedup groups. Deterministic ordering.
   failure's `task`/message when no level line is present: first `ERROR`, else
   last `WARNING`, else `task`/message. The orchestrator applies the fallback only
   when no category rule produced a finding for that failure.
+- **2026-07-03 (M2-08):** §5 details. `phase_order` is extended beyond the listed
+  `fetch < patch < configure < compile < qa`: a `dependency` (provider-resolution)
+  failure sorts *before* `fetch`, and `unknown` sorts last. Cascade detection is
+  **narrowed** from "later same-category errors" to "later same-**signature**
+  errors within one build": the corpus's multi-failure reports are independent
+  same-category recipe failures with distinct signatures, so same-category
+  linking would create false cascades. Only an identical repeated error is a
+  cascade in v1; broadening (e.g. via recipe dependencies) is future work.

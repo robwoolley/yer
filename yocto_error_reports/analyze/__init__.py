@@ -14,6 +14,7 @@ from collections.abc import Iterable, Sequence
 from .. import parse
 from ..models import Build, Finding, Report
 from .dedup import collapse_evidence, compute_signature, group_findings
+from .rank import mark_cascades, rank
 from .signatures import Rule, fallback_rule, register, registered_rules
 
 __all__ = ["analyze", "Rule", "register", "registered_rules"]
@@ -40,7 +41,7 @@ def analyze(builds: Iterable[Build], *, rules: Sequence[Rule] | None = None) -> 
 
     findings: list[Finding] = []
     for build in build_list:
-        findings.extend(build.findings)  # ingest-time parse findings (M1-03)
+        build_findings: list[Finding] = list(build.findings)  # ingest parse findings
         for failure in build.failures:
             lines = parse.parse_log(failure.log)
             hits: list[Finding] = []
@@ -53,15 +54,17 @@ def analyze(builds: Iterable[Build], *, rules: Sequence[Rule] | None = None) -> 
                 found = fallback.extract(failure, lines)
                 if found is not None:
                     hits.append(found)
-            findings.extend(hits)
+            build_findings.extend(hits)
 
-    # dedup (SPEC-002 §4): collapse evidence, assign signatures, group duplicates
-    for finding in findings:
-        finding.evidence = collapse_evidence(finding.evidence)
-        finding.signature = compute_signature(finding)
+        # dedup + cascade within the build, in log/failure order (SPEC-002 §4, §5)
+        for finding in build_findings:
+            finding.evidence = collapse_evidence(finding.evidence)
+            finding.signature = compute_signature(finding)
+        mark_cascades(build_findings)
+        findings.extend(build_findings)
+
     groups = group_findings(findings)
-
-    return Report(builds=build_list, findings=findings, groups=groups)
+    return Report(builds=build_list, findings=rank(findings), groups=groups)
 
 
 # Importing the rule modules self-registers them (SPEC-002 §2). Kept at the end

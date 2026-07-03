@@ -59,7 +59,7 @@ def test_ingest_parse_findings_surface_in_report():
     assert [f.title for f in report.findings] == ["bad json"]
 
 
-def test_rules_applied_in_deterministic_order():
+def test_multiple_matching_rules_produce_deterministic_findings():
     def extract_named(name):
         return lambda failure, lines: Finding(category="compile", severity="error", title=name)
 
@@ -67,9 +67,11 @@ def test_rules_applied_in_deterministic_order():
     r_late = Rule("late", "compile", "error", always, extract_named("late"), 0.5, order=20)
     r_early = Rule("early", "compile", "error", always, extract_named("early"), 0.5, order=5)
     build = Build(failures=[Failure(task="do_compile", log="ERROR: x", kind="task")])
-    # regardless of registration/list order, rules run sorted by `order`
-    titles = [f.title for f in analyze([build], rules=[r_late, r_early]).findings]
-    assert titles == ["early", "late"]
+    # both rules fire; final order is the deterministic rank order (SPEC-002 §5)
+    first = [f.title for f in analyze([build], rules=[r_late, r_early]).findings]
+    second = [f.title for f in analyze([build], rules=[r_early, r_late]).findings]
+    assert set(first) == {"early", "late"}
+    assert first == second  # deterministic regardless of input rule order
 
 
 def test_default_uses_module_registry():
