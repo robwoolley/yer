@@ -32,7 +32,7 @@ Task id format `M0-nn`. Each task cites its spec and a definition of done (DoD).
   - GitHub Actions: matrix on 3.11/3.12, run lint + type + tests.
   - DoD: CI green on a trivial PR.
 
-- [ ] **M0-05 — License & project metadata**
+- [x] **M0-05 — License & project metadata**
   - Spec: SPEC-000 §9 OQ3; README "License TBD".
   - Decide a license (recommend MIT or Apache-2.0), add `LICENSE`, fill
     `pyproject` metadata.

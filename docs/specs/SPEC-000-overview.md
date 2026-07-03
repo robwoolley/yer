@@ -82,4 +82,4 @@ Running `yer` against `error-reports/*.txt`:
 
 - **OQ1** `signature` normalization: conservative (v1 default) vs aggressive?
 - **OQ2** Ship SARIF in v1 (M2/M4) or defer to M5?
-- **OQ3** License choice (task M0-05).
+- **OQ3** License choice (task M0-05). **Resolved 2026-07-03: MIT.**

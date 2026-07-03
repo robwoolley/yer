@@ -7,9 +7,26 @@ name = "yocto-error-reports"
 description = "Parse Yocto error-report.txt files into ranked build findings."
 readme = "README.md"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Rob Woolley", email = "rob@robertwoolley.com" }]
+keywords = ["yocto", "openembedded", "bitbake", "ci", "build-errors", "logs"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Build Tools",
+]
 dynamic = ["version"]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/robwoolley/yer"
+Repository = "https://github.com/robwoolley/yer"
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "mypy"]

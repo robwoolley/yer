@@ -7,7 +7,7 @@ and turns them into:
 - **Rich terminal output** for developers debugging a failed build.
 - **Self-contained static HTML + JSON report artifacts** for CI to publish.
 - **Compact, token-bounded summaries** designed to be fed to Claude for
-  automated root-cause analysis and fix suggestions.
+  automated root-cause analysis and fix suggestinons.
 
 > `error-report.txt` files are the JSON payloads produced by OpenEmbedded's
 > `report-error` bbclass / `send-error-report`. See
@@ -68,4 +68,4 @@ $ yer summarize error-reports/err.txt --for-llm | claude -p "Fix this build fail
 
 ## License
 
-TBD (see [tasks/](tasks/) — task M0-05).
+[MIT](LICENSE) © 2026 Rob Woolley.
