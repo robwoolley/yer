@@ -42,7 +42,7 @@ stay **stdlib-only**; no CLI/render concerns.
   - DoD: **SPEC-001 T2** passes — the garbage fixture yields a parse-finding
     `Build`, not an exception.
 
-- [ ] **M1-04 — Parse `log` → `LogLine[]`**
+- [x] **M1-04 — Parse `log` → `LogLine[]`**
   - Spec: SPEC-001 §2 (`log` → `LogLine[]`), §3 (performance).
   - Iterate lines (no whole-string regex over 2 MB); split a leading
     `^(ERROR|WARNING|NOTE|DEBUG):\s?` token into `LogLine.level`, remainder →
