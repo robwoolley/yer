@@ -69,7 +69,7 @@ stay **stdlib-only**; no CLI/render concerns.
     (e.g. `run.do_compile.<N>` → placeholder; `TOPDIR/...:123` → path+line
     normalized); idempotent (`normalize(normalize(x)) == normalize(x)`).
 
-- [ ] **M1-07 — Wire corpus smoke to `ingest` + 2 MB perf budget**
+- [x] **M1-07 — Wire corpus smoke to `ingest` + 2 MB perf budget**
   - Spec: SPEC-001 T1, §3.
   - Upgrade the M0-07 harness (`tests/test_corpus_smoke.py`) to call
     `ingest.load_report` and assert a `Build` per file; add a timing assertion
