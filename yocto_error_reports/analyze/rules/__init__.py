@@ -4,4 +4,4 @@ The analyzer orchestrator imports this package so every rule self-registers; new
 categories are added here without touching `analyze/__init__.py`.
 """
 
-from . import fallback  # noqa: F401  — import side effect: registers the fallback
+from . import dependency, fallback, fetch  # noqa: F401  — import side effect: registers rules

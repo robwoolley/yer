@@ -38,7 +38,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
   - DoD: **SPEC-002 T6** — every corpus file yields ≥1 finding; evidence never
     exceeds N lines and excludes NOTE/DEBUG noise.
 
-- [ ] **M2-03 — `dependency` + `fetch` rules**
+- [x] **M2-03 — `dependency` + `fetch` rules**
   - Spec: SPEC-002 §2 (dependency, fetch).
   - `rules/dependency.py`: `kind=="message"` / `Nothing provides` / `No provider`
     → `dependency`, title = missing provide, recipe from `package`.
