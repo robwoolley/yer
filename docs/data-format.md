@@ -64,7 +64,13 @@ Task logs are line-oriented. bitbake prefixes many lines with a level token:
 - `WARNING:` — warnings + the BB script backtrace header.
 - `NOTE:` / `DEBUG:` — progress noise; usually filtered from evidence.
 
-Build paths are anonymized to a `TOPDIR/...` prefix by the reporter.
+Build paths are **mostly** anonymized to a `TOPDIR/...` prefix by the reporter —
+but not everything. `do_fetch` logs dump the build environment (an
+`SSH_AUTH_SOCK` ssh-agent socket path under a user's home) and the dependency
+`RPROVIDES` message embeds an absolute build root
+(`/<host-or-mount>/<user>/<date>/…/layers/…`); both leak a username/hostname. Any
+shareable output or fixture MUST redact these by structure (see
+[SPEC-005](specs/SPEC-005-llm-summary.md) privacy and `tests/fixtures/README.md`).
 
 ### High-signal patterns (seed the analyzer rules from these)
 

@@ -5,6 +5,7 @@ Provenance and derivation: tests/fixtures/README.md + derive_fixtures.py.
 """
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -18,6 +19,17 @@ REQUIRED_CATEGORIES = ("compile", "configure", "patch", "qa", "fetch", "dependen
 # Real config that must never appear in a shareable fixture (data-format §Privacy).
 SECRET_MARKERS = ("empty-root-password", "allow-empty-password", "allow-root-login")
 SCRUB_PLACEHOLDER = "<scrubbed for fixture — see tests/fixtures/README.md>"
+
+# Structural host-identity leak scan — matches by shape, names no real token
+# (data-format §"Log line grammar" privacy note; tests/fixtures/README.md):
+#   * an unredacted SSH_AUTH_SOCK value;
+#   * an absolute /<seg>/<seg>/<YYYY-MM-DD>/ build root;
+#   * a personal ~/.gnupg or ~/.ssh path.
+IDENTITY_LEAK = re.compile(
+    r'SSH_AUTH_SOCK="(?!<redacted>)'
+    r"|/[\w.+-]+/[\w.+-]+/\d{4}-\d{2}-\d{2}/"
+    r"|/\w[\w.+-]*/\w[\w.+-]*/\.(?:gnupg|ssh)/"
+)
 
 
 def test_at_least_six_fixtures():
@@ -46,3 +58,9 @@ def test_fixture_is_scrubbed(path):
     for key in ("local_conf", "auto_conf"):
         if key in data:
             assert data[key] == SCRUB_PLACEHOLDER, f"{path.name} {key} not scrubbed"
+
+
+@pytest.mark.parametrize("path", FIXTURES, ids=lambda p: p.name)
+def test_fixture_has_no_host_identity(path):
+    leak = IDENTITY_LEAK.search(path.read_text(encoding="utf-8"))
+    assert leak is None, f"{path.name} leaks host identity: {leak.group(0)!r}"

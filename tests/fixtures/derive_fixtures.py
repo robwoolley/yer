@@ -3,28 +3,53 @@
 
 Fixtures are curated, privacy-scrubbed copies of real reports (one per failure
 category, plus the SPEC-002 T3 "compile task that is really configure" case).
-The *only* transform applied is scrubbing `local_conf`/`auto_conf` — every build
-path in these samples is already `TOPDIR/...`-anchored by the reporter, so no
-host identity leaks (verified: no /home, usernames, or emails in the corpus).
+
+Two scrubbing passes are applied (see tests/fixtures/README.md):
+  1. `local_conf`/`auto_conf` are replaced wholesale with a placeholder.
+  2. Host-identity tokens are redacted from **all** string values. The reporter
+     anchors most build paths to `TOPDIR/...`, but it does NOT anonymize
+     `do_fetch` environment dumps (an ssh-agent socket path) or the dependency
+     `RPROVIDES` message (an absolute build root), which leak a username /
+     hostname. These are redacted by **structure**, so this script names no
+     specific host, mount, or user.
+
+An optional, git-ignored `redactions.local` (JSON list of `[regex, replacement]`)
+can add site-specific pairs without committing them.
 
 Run from the repo root:  python tests/fixtures/derive_fixtures.py
 Requires the local `error-reports/` corpus (gitignored); the generated *.json
 fixtures are committed so contributors without the corpus can still run tests.
-
-Provenance is documented in tests/fixtures/README.md.
 """
 
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).resolve().parent.parent.parent
 CORPUS = REPO / "error-reports"
 OUT = REPO / "tests" / "fixtures"
+LOCAL_REDACTIONS = OUT / "redactions.local"  # git-ignored, optional
 
 SCRUB_PLACEHOLDER = "<scrubbed for fixture — see tests/fixtures/README.md>"
 SCRUB_KEYS = ("local_conf", "auto_conf")
+
+# Structural host-identity redactions — named by shape, not by any real token:
+#   * an `SSH_AUTH_SOCK` value (leaks a user + home layout);
+#   * an absolute `/<seg>/<seg>/<YYYY-MM-DD>/...` build root (leaks host + user).
+_REDACTIONS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r'SSH_AUTH_SOCK="[^"]*"'), 'SSH_AUTH_SOCK="<redacted>"'),
+    (re.compile(r"/[\w.+-]+/[\w.+-]+/\d{4}-\d{2}-\d{2}"), "HOSTDIR"),
+]
+
+# Anything matching this after redaction is a residual host-identity leak.
+_LEAK_SCAN = re.compile(
+    r'SSH_AUTH_SOCK="(?!<redacted>)'
+    r"|/[\w.+-]+/[\w.+-]+/\d{4}-\d{2}-\d{2}/"
+    r"|/\w[\w.+-]*/\w[\w.+-]*/\.(?:gnupg|ssh)/"
+)
 
 # (source report, output fixture, category, why this sample)
 MANIFEST = [
@@ -45,28 +70,51 @@ MANIFEST = [
 ]
 
 
-def scrub(report: dict) -> dict:
-    """Return a copy with sensitive config fields replaced by a placeholder."""
-    out = dict(report)
-    for key in SCRUB_KEYS:
-        if key in out:
-            out[key] = SCRUB_PLACEHOLDER
-    return out
+def _load_local_redactions() -> list[tuple[re.Pattern[str], str]]:
+    if not LOCAL_REDACTIONS.exists():
+        return []
+    pairs = json.loads(LOCAL_REDACTIONS.read_text(encoding="utf-8"))
+    return [(re.compile(pat), repl) for pat, repl in pairs]
+
+
+def _redact_text(text: str, extra: list[tuple[re.Pattern[str], str]]) -> str:
+    for pattern, replacement in (*_REDACTIONS, *extra):
+        text = pattern.sub(replacement, text)
+    return text
+
+
+def scrub(obj: Any, extra: list[tuple[re.Pattern[str], str]]) -> Any:
+    """Recursively scrub config keys and host-identity tokens from a report."""
+    if isinstance(obj, dict):
+        return {
+            key: SCRUB_PLACEHOLDER if key in SCRUB_KEYS else scrub(value, extra)
+            for key, value in obj.items()
+        }
+    if isinstance(obj, list):
+        return [scrub(item, extra) for item in obj]
+    if isinstance(obj, str):
+        return _redact_text(obj, extra)
+    return obj
 
 
 def main() -> int:
     if not CORPUS.is_dir():
         print(f"error: corpus not found at {CORPUS} (it is gitignored)")
         return 2
+    extra = _load_local_redactions()
     OUT.mkdir(parents=True, exist_ok=True)
+    leaked = []
     for source, output, category, why in MANIFEST:
-        src = CORPUS / source
-        report = json.loads(src.read_text(encoding="utf-8"))
-        cleaned = scrub(report)
-        text = json.dumps(cleaned, indent=2, ensure_ascii=False) + "\n"
+        report = json.loads((CORPUS / source).read_text(encoding="utf-8"))
+        text = json.dumps(scrub(report, extra), indent=2, ensure_ascii=False) + "\n"
+        if _LEAK_SCAN.search(text):
+            leaked.append(output)
         (OUT / output).write_text(text, encoding="utf-8")
         print(f"[{category:17}] {source} -> {output}  ({why})")
-    print(f"\nwrote {len(MANIFEST)} fixtures to {OUT}")
+    if leaked:
+        print(f"\nERROR: residual host-identity leak in: {leaked}")
+        return 1
+    print(f"\nwrote {len(MANIFEST)} fixtures to {OUT} (no host-identity leaks)")
     return 0
 
 
