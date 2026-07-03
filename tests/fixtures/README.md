@@ -43,6 +43,14 @@ categories are represented, and that no secret markers survive.
 | `dependency_moveit.json` | `error_report_20260701200813.txt` | dependency | `Nothing provides …`; `recipe` absent (SPEC-001 T3/T4) |
 | `compile_gz-sim-vendor.json` | `error_report_20260701151947.txt` | compile→configure | `do_compile` that classifies as configure (SPEC-002 T3) |
 
+## `malformed/` — synthetic bad input (M1-03)
+
+`malformed/*.txt` are **hand-written, not derived from the corpus**: a truncated
+JSON object, non-JSON text, and a JSON array (valid JSON, wrong shape). They back
+SPEC-001 **T2** — ingest must turn each into a parse-finding `Build`, not raise.
+They contain no real data, and a directory scan skips them (they do not parse as
+report objects), so `load_reports([fixtures/])` still yields exactly the 7 reports.
+
 ## Note for M3 (privacy tests)
 
 Because `local_conf`/`auto_conf` are scrubbed here, the SPEC-005 redaction tests

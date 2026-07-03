@@ -19,7 +19,7 @@ from collections.abc import Iterable, Iterator
 from pathlib import Path
 from typing import Any
 
-from .models import Build, Failure
+from .models import Build, Failure, Finding
 
 STDIN = "-"
 
@@ -61,15 +61,41 @@ def build_from_report(data: dict[str, Any], source_path: str) -> Build:
     )
 
 
+def _parse_finding_build(source_path: str, problem: str) -> Build:
+    """A `Build` carrying a synthetic parse `Finding` (SPEC-001 §1 / FR2)."""
+    finding = Finding(
+        category="unknown",
+        severity="error",
+        title=problem,
+        evidence=[problem],
+        confidence=1.0,
+    )
+    return Build(source_path=source_path, findings=[finding])
+
+
 def load_report(path: str | Path) -> Build:
     """Load one report file into a `Build`. Extension is opaque — detect by JSON.
 
-    Raises on malformed JSON; SPEC-001 §1 error handling (a parse-finding `Build`
-    instead of raising) arrives in M1-03.
+    Never raises (FR2): a file that cannot be read, is not valid JSON, or is JSON
+    but not an object yields a `Build` carrying a synthetic parse `Finding`
+    (`category="unknown"`, `severity="error"`) so it surfaces and affects exit
+    code. (SPEC-001 §1 error handling.)
     """
     p = Path(path)
-    data = json.loads(p.read_text(encoding="utf-8"))
-    return build_from_report(data, str(p))
+    src = str(p)
+    try:
+        text = p.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return _parse_finding_build(src, f"Could not read report: {exc}")
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as exc:
+        return _parse_finding_build(src, f"Report is not valid JSON: {exc}")
+    if not isinstance(data, dict):
+        return _parse_finding_build(
+            src, f"Report is not a JSON object (got {type(data).__name__})"
+        )
+    return build_from_report(data, src)
 
 
 def _try_report_dict(path: Path) -> dict[str, Any] | None:
@@ -93,7 +119,15 @@ def _iter_dir_reports(root: Path) -> Iterator[tuple[Path, dict[str, Any]]]:
 
 
 def _load_stdin() -> Build:
-    data = json.loads(sys.stdin.read())
+    text = sys.stdin.read()
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as exc:
+        return _parse_finding_build(STDIN, f"Report is not valid JSON: {exc}")
+    if not isinstance(data, dict):
+        return _parse_finding_build(
+            STDIN, f"Report is not a JSON object (got {type(data).__name__})"
+        )
     return build_from_report(data, STDIN)
 
 

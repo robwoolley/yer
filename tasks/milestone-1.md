@@ -33,7 +33,7 @@ stay **stdlib-only**; no CLI/render concerns.
   - DoD: pointing ingest at a directory yields one `Build` per report;
     duplicate paths are collapsed; ordering is deterministic across runs.
 
-- [ ] **M1-03 — Malformed input → parse-finding `Build` (never raise)**
+- [x] **M1-03 — Malformed input → parse-finding `Build` (never raise)**
   - Spec: SPEC-001 §1 (Error handling, FR2).
   - A non-JSON or wrong-shape file MUST NOT raise; instead emit a `Build`
     carrying a synthetic parse `Finding` (`category="unknown"`,

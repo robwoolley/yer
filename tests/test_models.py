@@ -30,7 +30,7 @@ def test_failure_fields():
 def test_build_fields():
     assert _field_names(models.Build) == {
         "component", "machine", "distro", "build_sys", "target_sys",
-        "bitbake_version", "branch_commit", "failures", "raw", "source_path",
+        "bitbake_version", "branch_commit", "failures", "findings", "raw", "source_path",
     }
 
 

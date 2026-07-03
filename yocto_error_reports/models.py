@@ -47,6 +47,7 @@ class Build:
     bitbake_version: str | None = None
     branch_commit: str | None = None
     failures: list[Failure] = field(default_factory=list)
+    findings: list[Finding] = field(default_factory=list)  # ingest-time, e.g. parse error
     raw: dict[str, Any] = field(default_factory=dict)
     source_path: str = ""
 

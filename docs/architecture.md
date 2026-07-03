@@ -95,6 +95,7 @@ class Build:
     component: str | None; machine: str | None; distro: str | None
     build_sys: str | None; target_sys: str | None; bitbake_version: str | None
     branch_commit: str | None; failures: list["Failure"]
+    findings: list["Finding"]   # ingest-time findings, e.g. a parse error (SPEC-001 §1)
     raw: dict            # original JSON, for escape hatches
     source_path: str
 
@@ -153,3 +154,7 @@ false merges); the trend layer can tune it later.
   SPEC-002 §6 "dedup groups"; SPEC-005 §3) but not shown here; `FindingGroup` is
   the concrete type for SPEC-002's cross-report dedup groups. No behavior change
   — implemented in `models.py` as pure, defaultable dataclasses.
+- **2026-07-03 (M1-03):** Added `Build.findings: list[Finding]`. SPEC-001 §1
+  requires ingest to emit "a Build carrying a synthetic parse Finding" on
+  malformed input (FR2/T2), but `Build` had nowhere to carry it. `analyze` will
+  merge these ingest-time findings into `Report.findings`. Defaults to `[]`.
