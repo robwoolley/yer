@@ -22,7 +22,7 @@ classifiers = [
   "Topic :: Software Development :: Build Tools",
 ]
 dynamic = ["version"]
-dependencies = []
+dependencies = ["jinja2>=3"]  # render/ only (HTML report); core stays stdlib-only
 
 [project.urls]
 Homepage = "https://github.com/robwoolley/yer"
