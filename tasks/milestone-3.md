@@ -64,7 +64,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
     `--include-config`; and no host-identity structure appears in a summary of the
     `dependency_moveit`/`fetch_dartsim` samples.
 
-- [ ] **M3-06 — `--include-config` opt-in + secret redaction**
+- [x] **M3-06 — `--include-config` opt-in + secret redaction**
   - Spec: SPEC-005 §4.
   - `--include-config` includes config but still redacts secrets
     (`password`/`token`/`key`/`secret`, `*_password`/`allow-empty-password`).

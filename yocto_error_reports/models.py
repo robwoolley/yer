@@ -86,6 +86,7 @@ class Summary:
     findings: list[Finding] = field(default_factory=list)  # selected, top-K, ranked
     findings_omitted: int = 0
     log_lines_dropped: int = 0
+    config: str | None = None  # opt-in build config, secret-redacted (SPEC-005 §4)
 
 
 @dataclass

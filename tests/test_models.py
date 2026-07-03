@@ -51,7 +51,7 @@ def test_finding_group_fields():
 def test_summary_fields():
     # SPEC-005 §3: build subset + selected findings + honest truncation block.
     assert _field_names(models.Summary) == {
-        "build", "findings", "findings_omitted", "log_lines_dropped",
+        "build", "findings", "findings_omitted", "log_lines_dropped", "config",
     }
 
 

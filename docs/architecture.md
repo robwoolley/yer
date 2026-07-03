@@ -129,6 +129,7 @@ class FindingGroup:        # cross-report dedup group (SPEC-002 §4/§6)
 class Summary:             # token-bounded LLM projection (SPEC-005 §3)
     build: Build | None; findings: list["Finding"]      # selected top-K
     findings_omitted: int; log_lines_dropped: int       # honest-loss block
+    config: str | None                                  # opt-in, secret-redacted (§4)
 
 @dataclass
 class Report:              # analyzer output (SPEC-002 §6)

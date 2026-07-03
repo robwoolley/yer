@@ -23,3 +23,18 @@ def redact_host_identity(text: str) -> str:
     for pattern, replacement in _REDACTIONS:
         text = pattern.sub(replacement, text)
     return text
+
+
+# Config lines mentioning a secret are dropped whole (SPEC-005 §4): password /
+# token / key / secret, incl. `*_password` / `allow-empty-password` policy flags.
+_SECRET_LINE = re.compile(
+    r"(?i)password|passwd|secret|token|api[_-]?key|private[_-]?key|credential"
+)
+
+
+def redact_secrets(text: str) -> str:
+    """Replace any line that mentions a secret with a redaction marker."""
+    return "\n".join(
+        "# [redacted secret]" if _SECRET_LINE.search(line) else line
+        for line in text.splitlines()
+    )

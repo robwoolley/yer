@@ -13,7 +13,7 @@ import json
 from dataclasses import replace
 
 from .models import Build, Finding, Report, Summary
-from .redact import redact_host_identity
+from .redact import redact_host_identity, redact_secrets
 
 # Per-category hint for the LLM (SPEC-005 §3 `likely_cause`).
 _LIKELY_CAUSE = {
@@ -72,12 +72,27 @@ def _fit_finding(
     return replace(finding, title=title, evidence=evidence)
 
 
+def _config_text(build: Build | None) -> str | None:
+    """Extract local_conf/auto_conf from a build, redacted (SPEC-005 §4)."""
+    if build is None:
+        return None
+    parts = [
+        value
+        for key in ("local_conf", "auto_conf")
+        if isinstance(value := build.raw.get(key), str) and value.strip()
+    ]
+    if not parts:
+        return None
+    return redact_secrets(redact_host_identity("\n".join(parts)))
+
+
 def summarize(
     report: Report,
     *,
     budget: int = DEFAULT_BUDGET,
     top_k: int = DEFAULT_TOP_K,
     max_evidence: int = DEFAULT_MAX_EVIDENCE,
+    include_config: bool = False,
 ) -> Summary:
     """Select a token-bounded subset of the ranked findings into a `Summary`."""
     selected: list[Finding] = []
@@ -105,6 +120,7 @@ def summarize(
         findings=selected,
         findings_omitted=findings_omitted,
         log_lines_dropped=log_lines_dropped,
+        config=_config_text(build) if include_config else None,
     )
 
 
@@ -173,6 +189,13 @@ def to_markdown(summary: Summary) -> str:
         lines.append("```")
         lines.append("")
 
+    if summary.config:
+        lines.append("## Build config (secrets redacted)")
+        lines.append("```")
+        lines.extend(summary.config.splitlines())
+        lines.append("```")
+        lines.append("")
+
     note = _truncation_note(summary)
     if note:
         lines.append(note)
@@ -212,6 +235,7 @@ def to_json(summary: Summary) -> str:
     document = {
         "build": build,
         "findings": findings,
+        "config": summary.config,
         "truncated": {
             "findings_omitted": summary.findings_omitted,
             "log_lines_dropped": summary.log_lines_dropped,
