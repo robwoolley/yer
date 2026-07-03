@@ -17,7 +17,7 @@ concerns out of the core.
 
 ---
 
-- [ ] **M4-01 — Canonical `report.json` (`render/json_out.py`)**
+- [x] **M4-01 — Canonical `report.json` (`render/json_out.py`)**
   - Spec: SPEC-004 §1; SPEC-002 §6 ordering.
   - `to_report_json(report, *, tool_version) -> str`: `schema_version`,
     `tool_version`, `builds[]` (component/machine/distro/source/failure_count),
