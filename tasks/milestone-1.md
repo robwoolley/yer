@@ -59,7 +59,7 @@ stay **stdlib-only**; no CLI/render concerns.
   - DoD: **SPEC-001 T6** passes — frames extracted from
     `configure_gz-gui9.json` (`cmake_do_configure` / `do_configure`, path, line).
 
-- [ ] **M1-06 — Shared `normalize()` helper**
+- [x] **M1-06 — Shared `normalize()` helper**
   - Spec: SPEC-001 §2 (Path normalization helper).
   - Provide `normalize(text)` mapping `TOPDIR/…` paths, absolute temp paths, line
     numbers, hex addresses, and PIDs (e.g. `run.do_compile.2609824`) to stable

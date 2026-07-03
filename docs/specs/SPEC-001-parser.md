@@ -70,3 +70,12 @@ into structured `LogLine` events. **No classification here.**
 - **T5** Level prefixes correctly split on the `do_package_qa` sample
   (`ERROR: QA Issue:` → level `ERROR`, text `QA Issue:…`).
 - **T6** Backtrace frames extracted from the `gz-gui9 do_configure` sample.
+
+## Changelog
+
+- **2026-07-03 (M1-06):** Clarified §2 `normalize()` scope for v1. It collapses
+  **numeric volatility only** — run-script PIDs (`run.do_*.<PID>`), file
+  line/column numbers, and hex addresses — and **preserves path text** so
+  distinct recipes do not falsely merge. This is the conservative choice
+  mandated by SPEC-002 §4 / OQ1 (favor fewer false merges); wholesale collapsing
+  of `TOPDIR`/temp path tokens is deferred to signature tuning in M2.

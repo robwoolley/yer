@@ -24,6 +24,15 @@ _LEVEL_RE = re.compile(r"^(ERROR|WARNING|NOTE|DEBUG):\s?")
 _BACKTRACE_HEADER = "Backtrace (BB generated script)"
 _FRAME_RE = re.compile(r"^\s*#(\d+):\s*([^,]+?),\s*(.+?),\s*line\s+(\d+)\s*$")
 
+# normalize(): map volatile tokens to stable placeholders for signature dedup
+# (SPEC-001 §2). Conservative v1 (SPEC-002 §4 / OQ1): numeric volatility only —
+# PIDs, file line/column numbers, and hex addresses. Path text is preserved so
+# distinct recipes do not falsely merge. Applied in order.
+_HEX_RE = re.compile(r"0x[0-9a-fA-F]+")
+_RUN_PID_RE = re.compile(r"(run\.[A-Za-z0-9_]+\.)\d+")
+_FILE_LINE_RE = re.compile(r"([\w./+-]*\.[A-Za-z][A-Za-z0-9+]*):\d+(?::\d+)?")
+_LINE_WORD_RE = re.compile(r"\bline \d+\b")
+
 
 def _split_level(line: str) -> tuple[str | None, str]:
     match = _LEVEL_RE.match(line)
@@ -63,6 +72,22 @@ class BacktraceFrame:
     func: str
     path: str
     line: int
+
+
+def normalize(text: str) -> str:
+    """Map volatile tokens to stable placeholders (SPEC-001 §2).
+
+    Shared by parse and analyze so the SPEC-002 `signature` is computed with one
+    normalizer. Conservative v1 (OQ1): only numeric volatility is collapsed —
+    run-script PIDs, file line/column numbers, hex addresses — while path text is
+    kept, so the same failure dedups without merging distinct recipes.
+    Idempotent: `normalize(normalize(x)) == normalize(x)`.
+    """
+    text = _HEX_RE.sub("0x<HEX>", text)
+    text = _RUN_PID_RE.sub(r"\1<PID>", text)
+    text = _FILE_LINE_RE.sub(r"\1:<N>", text)
+    text = _LINE_WORD_RE.sub("line <N>", text)
+    return text
 
 
 def extract_backtrace(lines: Iterable[LogLine]) -> list[BacktraceFrame]:
