@@ -18,7 +18,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
 
 ---
 
-- [ ] **M3-01 — Selection → `Summary` (top-K, tail-biased, truncation accounting)**
+- [x] **M3-01 — Selection → `Summary` (top-K, tail-biased, truncation accounting)**
   - Spec: SPEC-005 §1; architecture §"The data model" (`Summary`).
   - `summarize.py`: `summarize(report, *, budget, top_k=5, max_evidence=8) ->
     Summary`. Select top-K findings by rank; ≤ M evidence lines each,
