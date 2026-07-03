@@ -31,7 +31,7 @@ def collapse_evidence(evidence: list[str]) -> list[str]:
         while j + 1 < len(evidence) and normalize(evidence[j + 1]) == normalize(evidence[i]):
             j += 1
         count = j - i + 1
-        collapsed.append(f"{evidence[i]} (×{count})" if count > 1 else evidence[i])
+        collapsed.append(f"{evidence[i]} (x{count})" if count > 1 else evidence[i])
         i = j + 1
     return collapsed
 

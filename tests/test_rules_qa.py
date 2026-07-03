@@ -30,7 +30,7 @@ def test_t2_qa_collapses_to_one_finding_with_symlink_count():
     assert "dev-so" in finding.title and "10" in finding.title
     # evidence is collapsed to one representative line per class, not 11 lines
     assert len(finding.evidence) <= 3
-    assert any("(×10)" in line for line in finding.evidence)
+    assert any("(x10)" in line for line in finding.evidence)
 
 
 def test_qa_rule_reports_distinct_classes():

@@ -44,12 +44,12 @@ def _extract(failure: Failure, lines: list[LogLine]) -> Finding | None:
 
     # Within-finding collapse: one representative line per class, with a count.
     evidence = [
-        f"{representative[cls]} (×{n})" if n > 1 else representative[cls]
+        f"{representative[cls]} (x{n})" if n > 1 else representative[cls]
         for cls, n in counts.most_common()
     ]
 
     if counts:
-        summary = ", ".join(f"{cls} ×{n}" for cls, n in counts.most_common())
+        summary = ", ".join(f"{cls} x{n}" for cls, n in counts.most_common())
         title = f"QA Issue: {summary}"
     else:
         title = "Fatal QA errors were found"

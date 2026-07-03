@@ -105,7 +105,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
     findings), **T2** (`--fail-on none` → exit 0), **T4** (no inputs / bad path →
     exit 2, stderr message); SPEC-000 acceptance #3.
 
-- [ ] **M2-10 — `analyze --format json`, filters, `--no-color`**
+- [x] **M2-10 — `analyze --format json`, filters, `--no-color`**
   - Spec: SPEC-003 §1, §3, §5.
   - Deterministic `--format json` (byte-stable; canonical `report.json` schema
     conformance is finalized in M4/SPEC-004), `--category`/`--recipe` filters,

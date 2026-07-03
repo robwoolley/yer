@@ -54,7 +54,7 @@ def test_different_categories_differ():
 
 def test_within_finding_evidence_collapse():
     collapsed = collapse_evidence(["boom", "boom", "boom", "next"])
-    assert collapsed == ["boom (×3)", "next"]
+    assert collapsed == ["boom (x3)", "next"]
 
 
 def test_corpus_findings_all_signed_and_grouped():
