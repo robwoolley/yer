@@ -22,7 +22,7 @@ Task id format `M0-nn`. Each task cites its spec and a definition of done (DoD).
   - Dataclasses: `Build`, `Failure`, `LogLine`, `Finding`, `Summary`, `Report`.
   - DoD: importable, typed, `mypy` clean; no logic.
 
-- [ ] **M0-03 — Test + lint + type harness**
+- [x] **M0-03 — Test + lint + type harness**
   - Spec: CLAUDE.md conventions.
   - Add `pytest`, `ruff`, `mypy` config; a trivial smoke test.
   - DoD: `pytest`, `ruff check`, `mypy` all pass locally.

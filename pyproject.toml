@@ -12,7 +12,7 @@ dynamic = ["version"]
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "ruff", "mypy"]
 
 [project.scripts]
 yer = "yocto_error_reports.cli:main"
@@ -22,3 +22,24 @@ path = "yocto_error_reports/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["yocto_error_reports"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+  # Registered ahead of the M0-07 corpus smoke harness so --strict-markers holds.
+  "slow: whole-corpus / large-input tests (deselect with -m 'not slow')",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+# Strict on the source package (the cross-stage contract); tests stay untyped.
+python_version = "3.11"
+strict = true
+files = ["yocto_error_reports"]
