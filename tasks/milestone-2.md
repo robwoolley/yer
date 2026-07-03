@@ -63,7 +63,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
   - DoD: **SPEC-002 T2** — `qa_gz-physics-vendor` → **one** qa finding carrying a
     symlink count, not 14 (golden-file check).
 
-- [ ] **M2-06 — `configure` + `compile` rules (content over task name)**
+- [x] **M2-06 — `configure` + `compile` rules (content over task name)**
   - Spec: SPEC-002 §2 (configure, compile + grounded notes).
   - `rules/configure.py`: `CMake Error at`, `Configuring incomplete`,
     `package "X" … NOT FOUND`; `file`/`line` from `CMakeLists.txt:<n>`.
