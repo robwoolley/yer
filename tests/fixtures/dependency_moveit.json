@@ -1,0 +1,45 @@
+{
+  "auto_conf": "<scrubbed for fixture — see tests/fixtures/README.md>",
+  "bitbake_version": "2.18.0",
+  "branch_commit": "wrynose: 06dd66e6220e5ce4ed4b9af4d8231ae5f0a8ce80",
+  "build_sys": "x86_64-linux",
+  "component": "moveit-ros-planning-interface-dev",
+  "distro": "ros2",
+  "failures": [
+    {
+      "log": "Nothing RPROVIDES 'moveit-ros-planning-interface-dev' (but HOSTDIR/build/../layers/meta-ros/meta-ros2-kilted/generated-recipes/moveit/moveit-ros-planning-interface_2.14.3-1.bb RDEPENDS on or otherwise requires it)\nNo eligible RPROVIDERs exist for 'moveit-ros-planning-interface-dev'",
+      "package": "moveit-ros-planning-interface-dev",
+      "task": "Nothing provides 'moveit-ros-planning-interface-dev'"
+    }
+  ],
+  "layer_version": [
+    "meta-clang           = \"wrynose:78c5e12f08198f4f257a9348516d2103cd617c1d\"",
+    "meta-clang-revival   = \"wrynose:0b254fdb768cf94e5ad18b244a0ea979260c8018\"",
+    "meta-filesystems     ",
+    "meta-gnome           ",
+    "meta-initramfs       ",
+    "meta-multimedia      ",
+    "meta-networking      ",
+    "meta-oe              ",
+    "meta-perl            ",
+    "meta-python          ",
+    "meta-webserver       ",
+    "meta-xfce            = \"wrynose:100027977216601000cbefc42c2ff6cf667e7b5e\"",
+    "meta-poky            ",
+    "meta-yocto-bsp       = \"wrynose:8251bdad5fda780a000fb41e6eda82eadf0fa39e\"",
+    "meta                 = \"wrynose:06dd66e6220e5ce4ed4b9af4d8231ae5f0a8ce80\"",
+    "meta-python-ai       = \"wrynose:ee5fe6ff2b9e3437bfc1969794e5e6d8c90b6542\"",
+    "meta-qt5             = \"master:cf98b07697c541d4b47f433c1a18cd406cd7917c\"",
+    "meta-raspberrypi     = \"master:6d81e22c38ce5ec10ea90b4d938be3044222447d\"",
+    "meta-intel-realsense = \"wrynose:46aa4079e82ff9a5d4ca32e2b72c6d3477458050\"",
+    "meta-ros-common      ",
+    "meta-ros2            ",
+    "meta-ros2-kilted     = \"wrynose:bfd3eceaae937d84bed25f00b2ad1c2c9c15f6ab\"",
+    "meta-virtualization  = \"wrynose:781735b97ae5013cacabbecd38e6da6b510cf3fb\"",
+    "meta-zenoh           = \"master:e3ce28f9dce8f341870194c5140e519606ddc3cb\""
+  ],
+  "local_conf": "<scrubbed for fixture — see tests/fixtures/README.md>",
+  "machine": "raspberrypi5",
+  "nativelsb": "universal/ubuntu-22.04",
+  "target_sys": "aarch64-oe-linux"
+}

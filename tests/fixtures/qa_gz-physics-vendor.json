@@ -1,0 +1,47 @@
+{
+  "auto_conf": "<scrubbed for fixture — see tests/fixtures/README.md>",
+  "bitbake_version": "2.18.0",
+  "branch_commit": "wrynose: 06dd66e6220e5ce4ed4b9af4d8231ae5f0a8ce80",
+  "build_sys": "x86_64-linux",
+  "component": "gz-physics-vendor:do_build",
+  "distro": "ros2",
+  "failures": [
+    {
+      "log": "DEBUG: Executing python function extend_recipe_sysroot\nNOTE: Direct dependencies are ['TOPDIR/../layers/openembedded-core/meta/recipes-devtools/binutils/binutils-cross_2.46.bb:do_populate_sysroot', 'virtual:native:TOPDIR/../layers/openembedded-core/meta/recipes-devtools/pseudo/pseudo_git.bb:do_populate_sysroot']\nNOTE: Installed into sysroot: []\nNOTE: Skipping as already exists in sysroot: ['gettext-minimal-native', 'binutils-cross-aarch64', 'libtool-native', 'm4-native', 'texinfo-dummy-native', 'zlib-native', 'flex-native', 'gnu-config-native', 'pseudo-native', 'xz-native', 'attr-native', 'sqlite3-native']\nDEBUG: Python function extend_recipe_sysroot finished\nDEBUG: Executing python function sstate_task_prefunc\nDEBUG: Python function sstate_task_prefunc finished\nDEBUG: Executing python function do_package_qa\nDEBUG: Executing python function read_subpackage_metadata\nDEBUG: Python function read_subpackage_metadata finished\nNOTE: Checking Package: gz-physics-vendor-dev\nNOTE: Checking Package: gz-physics-vendor-staticdev\nNOTE: Checking Package: gz-physics-vendor-locale\nNOTE: Package gz-physics-vendor-dbg skipping QA tests: {'libdir'}\nNOTE: Checking Package: gz-physics-vendor-dbg\nNOTE: Package gz-physics-vendor skipping QA tests: {'libdir'}\nNOTE: Checking Package: gz-physics-vendor\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-dartsim-plugin.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-tpe-plugin.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-bullet-plugin.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-bullet-featherstone-plugin.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/libgz-physics-dartsim-plugin.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/libgz-physics-tpe-plugin.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/libgz-physics.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/libgz-physics-bullet-plugin.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/libgz-physics-tpelib.so.9.3.0\nNOTE: aarch64-oe-linux-objdump -p TOPDIR/tmp/work/cortexa76-oe-linux/gz-physics-vendor/0.4.4-1/packages-split/gz-physics-vendor/opt/ros/lyrical/lib/libgz-physics-bullet-featherstone-plugin.so.9.3.0\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/libgz-physics-dartsim-plugin.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/libgz-physics-tpe-plugin.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/libgz-physics-bullet-plugin.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/libgz-physics-bullet-featherstone-plugin.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/libgz-physics-tpelib.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/libgz-physics.so' [dev-so]\nERROR: QA Issue: File /opt/ros/lyrical/lib/cmake/gz-physics-dartsim/gz-physics-dartsim-targets.cmake in package gz-physics-vendor contains reference to TMPDIR [buildpaths]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-dartsim-plugin.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-tpe-plugin.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-bullet-plugin.so' [dev-so]\nERROR: QA Issue: non -dev/-dbg/nativesdk- package gz-physics-vendor contains symlink .so '/opt/ros/lyrical/lib/gz-physics-9/engine-plugins/libgz-physics-bullet-featherstone-plugin.so' [dev-so]\nNOTE: Checking Package: gz-physics-vendor-doc\nNOTE: Checking Package: gz-physics-vendor-src\nNOTE: Package gz-physics-vendor skipping libdir QA test\nNOTE: Package gz-physics-vendor-dbg skipping libdir QA test\nERROR: Fatal QA errors were found, failing task.\nDEBUG: Python function do_package_qa finished\n",
+      "package": "gz-physics-vendor-0.4.4-1-r0",
+      "recipe": "gz-physics-vendor",
+      "task": "do_package_qa"
+    }
+  ],
+  "layer_version": [
+    "meta-clang           = \"wrynose:78c5e12f08198f4f257a9348516d2103cd617c1d\"",
+    "meta-clang-revival   = \"wrynose:0b254fdb768cf94e5ad18b244a0ea979260c8018\"",
+    "meta-filesystems     ",
+    "meta-gnome           ",
+    "meta-initramfs       ",
+    "meta-multimedia      ",
+    "meta-networking      ",
+    "meta-oe              ",
+    "meta-perl            ",
+    "meta-python          ",
+    "meta-webserver       ",
+    "meta-xfce            = \"wrynose:100027977216601000cbefc42c2ff6cf667e7b5e\"",
+    "meta-poky            ",
+    "meta-yocto-bsp       = \"wrynose:8251bdad5fda780a000fb41e6eda82eadf0fa39e\"",
+    "meta                 = \"wrynose:06dd66e6220e5ce4ed4b9af4d8231ae5f0a8ce80\"",
+    "meta-python-ai       = \"wrynose:ee5fe6ff2b9e3437bfc1969794e5e6d8c90b6542\"",
+    "meta-qt6             = \"6.10.3:364b0f0ccd2eafb251f0d1d22b68e60100b01dd2\"",
+    "meta-raspberrypi     = \"master:6d81e22c38ce5ec10ea90b4d938be3044222447d\"",
+    "meta-intel-realsense = \"wrynose:46aa4079e82ff9a5d4ca32e2b72c6d3477458050\"",
+    "meta-ros-common      ",
+    "meta-ros2            ",
+    "meta-ros2-lyrical    = \"wrynose:7a71d9d9c8a6c6585c0cc1b80a84662f8f6fdaf2\"",
+    "meta-tasklogger      = \"main:f55f959c2189f32e0c4fdcabf0d23ab9f4d77e30\"",
+    "meta-virtualization  = \"wrynose:781735b97ae5013cacabbecd38e6da6b510cf3fb\"",
+    "meta-zenoh           = \"master:e3ce28f9dce8f341870194c5140e519606ddc3cb\""
+  ],
+  "local_conf": "<scrubbed for fixture — see tests/fixtures/README.md>",
+  "machine": "raspberrypi5",
+  "nativelsb": "universal/ubuntu-22.04",
+  "target_sys": "aarch64-oe-linux"
+}

@@ -38,7 +38,7 @@ Task id format `M0-nn`. Each task cites its spec and a definition of done (DoD).
     `pyproject` metadata.
   - DoD: `LICENSE` present; README license section updated.
 
-- [ ] **M0-06 — Fixture pipeline**
+- [x] **M0-06 — Fixture pipeline**
   - Spec: SPEC-001/002 acceptance tests; CLAUDE.md "ground truth".
   - Select ≥6 reports from `error-reports/` (one per category: compile,
     configure, patch, qa, fetch, dependency) → `tests/fixtures/`, **anonymized**
