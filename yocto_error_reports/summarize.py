@@ -9,9 +9,21 @@ cut. No network calls; stdlib-only. Privacy redaction of evidence lands in M3-05
 
 from __future__ import annotations
 
+import json
 from dataclasses import replace
 
 from .models import Build, Finding, Report, Summary
+
+# Per-category hint for the LLM (SPEC-005 §3 `likely_cause`).
+_LIKELY_CAUSE = {
+    "configure": "configure-time error; a dependency may be missing from the sysroot (DEPENDS)",
+    "compile": "compilation error; inspect the first compiler diagnostic",
+    "patch": "a patch does not apply cleanly to this source version",
+    "qa": "a packaging QA check failed",
+    "fetch": "the source could not be fetched (URI, network, or checksum)",
+    "dependency": "unresolved provider; a required recipe/PROVIDES is missing",
+    "unknown": "see the evidence for the failing step",
+}
 
 CHARS_PER_TOKEN = 4  # rough token estimate (SPEC-005 §5 chars/4 heuristic)
 DEFAULT_BUDGET = 4000
@@ -160,3 +172,44 @@ def to_markdown(summary: Summary) -> str:
     if note:
         lines.append(note)
     return "\n".join(lines).rstrip() + "\n"
+
+
+def _likely_cause(finding: Finding) -> str:
+    return _LIKELY_CAUSE.get(finding.category, _LIKELY_CAUSE["unknown"])
+
+
+def to_json(summary: Summary) -> str:
+    """Render a `Summary` as deterministic, byte-stable JSON (SPEC-005 §3)."""
+    build: dict[str, str] = {}
+    if summary.build is not None:
+        build_keys = (
+            "component", "machine", "distro", "target_sys", "bitbake_version", "branch_commit",
+        )
+        for key in build_keys:
+            value = getattr(summary.build, key)
+            if value is not None:
+                build[key] = value
+
+    findings = [
+        {
+            "category": f.category,
+            "confidence": f.confidence,
+            "recipe": f.recipe,
+            "task": f.task,
+            "title": f.title,
+            "file": f.file,
+            "line": f.line,
+            "likely_cause": _likely_cause(f),
+            "evidence": f.evidence,
+        }
+        for f in summary.findings
+    ]
+    document = {
+        "build": build,
+        "findings": findings,
+        "truncated": {
+            "findings_omitted": summary.findings_omitted,
+            "log_lines_dropped": summary.log_lines_dropped,
+        },
+    }
+    return json.dumps(document, indent=2, sort_keys=True)

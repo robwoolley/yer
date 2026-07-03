@@ -44,7 +44,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
   - DoD: output matches the SPEC-005 §2 shape on the `configure_gz-gui9` fixture
     (golden-ish); root cause + `file:line` present.
 
-- [ ] **M3-04 — JSON output (`--format json`) + `truncated` block**
+- [x] **M3-04 — JSON output (`--format json`) + `truncated` block**
   - Spec: SPEC-005 §3.
   - Render a `Summary` to deterministic JSON: `build` subset, `findings`
     (category/confidence/recipe/task/title/`file`/`line`/`likely_cause`/evidence),
