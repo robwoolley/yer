@@ -77,7 +77,7 @@ stay **stdlib-only**; no CLI/render concerns.
   - DoD: **SPEC-001 T1** green via `ingest` over all 77 files; the large-log
     parse completes within the few-second corpus budget.
 
-- [ ] **M1-08 — Failure inventory demo (recipe/task counts)**
+- [x] **M1-08 — Failure inventory demo (recipe/task counts)**
   - Spec: SPEC-001 §1 (Output `Build[]`); roadmap M1 demoable outcome.
   - Add a pure `inventory(builds)` helper returning per-task/per-recipe counts,
     plus a **minimal** printout of the corpus inventory. Thin and provisional —
