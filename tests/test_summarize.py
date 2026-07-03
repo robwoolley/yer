@@ -7,12 +7,15 @@ Acceptance test copied from SPEC-005 §5:
 
 from pathlib import Path
 
+import pytest
+
 from yocto_error_reports import ingest
 from yocto_error_reports.analyze import analyze
 from yocto_error_reports.models import Report
-from yocto_error_reports.summarize import summarize
+from yocto_error_reports.summarize import DEFAULT_BUDGET, estimate_tokens, summarize
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
+CORPUS = Path(__file__).resolve().parent.parent / "error-reports"
 
 
 def _report(fixture):
@@ -59,3 +62,29 @@ def test_empty_report_summarizes_to_empty():
     assert summary.findings == []
     assert summary.build is None
     assert summary.findings_omitted == 0
+
+
+def test_budget_bounds_real_findings():
+    report = analyze(ingest.load_reports([FIXTURES]))  # ~10 findings, real evidence
+    summary = summarize(report, budget=200, max_evidence=8)
+    assert estimate_tokens(summary) <= 200
+    assert summary.findings[0].signature == report.findings[0].signature  # rank-1 kept
+
+
+def test_tiny_budget_keeps_root_cause():
+    report = analyze(ingest.load_reports([FIXTURES]))
+    summary = summarize(report, budget=1)
+    assert summary.findings  # root cause always present
+    assert summary.findings[0].signature == report.findings[0].signature
+    assert summary.findings_omitted == len(report.findings) - len(summary.findings)
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(not CORPUS.is_dir(), reason="corpus not present (gitignored)")
+def test_t1_largest_log_report_under_default_budget():
+    biggest = max(
+        ingest.load_reports([CORPUS]),
+        key=lambda b: max((len(f.log) for f in b.failures), default=0),
+    )
+    summary = summarize(analyze([biggest]))
+    assert estimate_tokens(summary) <= DEFAULT_BUDGET

@@ -27,7 +27,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
   - DoD: **SPEC-005 T5** — for a multi-finding report the rank-1 root cause is
     always present, even at a small `--budget`; truncation counts are correct.
 
-- [ ] **M3-02 — Token-budget bounding**
+- [x] **M3-02 — Token-budget bounding**
   - Spec: SPEC-005 §1 (token budget).
   - Enforce the emitted summary fits under budget (default ~4000 tokens;
     approximate via a chars/4 heuristic). Trim evidence, then findings, recording
