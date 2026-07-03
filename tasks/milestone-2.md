@@ -75,7 +75,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
     `configure_gz-gui9` → `configure`. Completes **SPEC-002 T1** across the six
     category fixtures.
 
-- [ ] **M2-07 — Signatures + cross-report dedup groups**
+- [x] **M2-07 — Signatures + cross-report dedup groups**
   - Spec: SPEC-002 §4 (dedup), reuse `parse.normalize`.
   - `analyze/dedup.py`: `signature = sha1(normalize(category + "\n" + title +
     "\n" + top_evidence))`; group duplicate findings across reports in one run

@@ -13,6 +13,7 @@ from collections.abc import Iterable, Sequence
 
 from .. import parse
 from ..models import Build, Finding, Report
+from .dedup import collapse_evidence, compute_signature, group_findings
 from .signatures import Rule, fallback_rule, register, registered_rules
 
 __all__ = ["analyze", "Rule", "register", "registered_rules"]
@@ -54,7 +55,13 @@ def analyze(builds: Iterable[Build], *, rules: Sequence[Rule] | None = None) -> 
                     hits.append(found)
             findings.extend(hits)
 
-    return Report(builds=build_list, findings=findings, groups=[])
+    # dedup (SPEC-002 §4): collapse evidence, assign signatures, group duplicates
+    for finding in findings:
+        finding.evidence = collapse_evidence(finding.evidence)
+        finding.signature = compute_signature(finding)
+    groups = group_findings(findings)
+
+    return Report(builds=build_list, findings=findings, groups=groups)
 
 
 # Importing the rule modules self-registers them (SPEC-002 §2). Kept at the end
