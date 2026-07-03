@@ -29,7 +29,7 @@ concrete acceptance test. Core `analyze`/`parse`/`models` stay **stdlib-only**
     returns an empty deterministic `Report`; parse-finding Builds surface in
     `Report.findings`.
 
-- [ ] **M2-02 — Fallback rule + evidence extraction**
+- [x] **M2-02 — Fallback rule + evidence extraction**
   - Spec: SPEC-002 §2 (`fallback.py`), §3 (evidence).
   - `rules/fallback.py`: any remaining `level=="ERROR"` (else last `WARNING`) →
     an `unknown` finding, guaranteeing every failure yields ≥1. Evidence helper:

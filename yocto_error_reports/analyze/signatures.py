@@ -30,6 +30,7 @@ class Rule:
 
 
 _REGISTRY: list[Rule] = []
+_FALLBACK: Rule | None = None
 
 
 def register(rule: Rule) -> Rule:
@@ -39,10 +40,21 @@ def register(rule: Rule) -> Rule:
 
 
 def registered_rules() -> tuple[Rule, ...]:
-    """All registered rules, ordered deterministically by `(order, name)`."""
+    """The registered category rules, ordered by `(order, name)` (excludes fallback)."""
     return tuple(sorted(_REGISTRY, key=lambda rule: (rule.order, rule.name)))
 
 
 def clear_rules() -> None:
-    """Empty the registry (test isolation)."""
+    """Empty the category registry (test isolation). Leaves the fallback intact."""
     _REGISTRY.clear()
+
+
+def set_fallback(rule: Rule) -> Rule:
+    """Register the single last-resort rule, applied only when no category rule hits."""
+    global _FALLBACK
+    _FALLBACK = rule
+    return rule
+
+
+def fallback_rule() -> Rule | None:
+    return _FALLBACK

@@ -86,3 +86,12 @@ and dedup groups. Deterministic ordering.
 - **T4** `ogre-next do_patch` → `patch`, `file` = `OgreMathlibNEON.h`, hunk line 601.
 - **T5** A file with 22 failures produces ≤22 findings, correctly deduped, ranked.
 - **T6** Every corpus file yields ≥1 finding (fallback guarantee).
+
+## Changelog
+
+- **2026-07-03 (M2-02):** Clarified §2 fallback title selection. To uphold the
+  "every failure yields ≥1 finding" guarantee for the 2 dependency failures that
+  carry neither an `ERROR` nor a `WARNING` line, the fallback falls back to the
+  failure's `task`/message when no level line is present: first `ERROR`, else
+  last `WARNING`, else `task`/message. The orchestrator applies the fallback only
+  when no category rule produced a finding for that failure.
