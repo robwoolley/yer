@@ -51,7 +51,7 @@ stay **stdlib-only**; no CLI/render concerns.
     (`ERROR: QA Issue:` → level `ERROR`, text `QA Issue:…`); the 560 KB / 2.1 MB
     logs parse via streaming within the few-second budget.
 
-- [ ] **M1-05 — Backtrace block → structured frames**
+- [x] **M1-05 — Backtrace block → structured frames**
   - Spec: SPEC-001 §2 (Backtrace block), data-format §"The BB backtrace block".
   - Detect `WARNING: Backtrace (BB generated script):` and the following
     `#N: <func>, <path>, line <n>` frames; expose parsed frames for the analyzer
