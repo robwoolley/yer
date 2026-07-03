@@ -28,7 +28,7 @@ concerns out of the core.
   - DoD: **SPEC-004 T3** — `report.json` validates against the schema and is
     byte-identical across two runs.
 
-- [ ] **M4-02 — Privacy: redact host identity + exclude config from artifacts**
+- [x] **M4-02 — Privacy: redact host identity + exclude config from artifacts**
   - Spec: SPEC-004 §4 (**update first**: add host-identity redaction, as in
     SPEC-005 §4 — `report.json`/HTML are published artifacts).
   - Reuse `redact.redact_host_identity` on finding evidence/titles in the

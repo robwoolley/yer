@@ -62,6 +62,16 @@ self-contained HTML page, and (fast-follow) SARIF.
   timestamp only in non-semantic chrome.
 - `local_conf`/`auto_conf` never rendered unless `--include-config`; redaction
   per SPEC-005 applies even then.
+- **Redact host identity from evidence — always.** `report.json` and the HTML
+  page are **published** artifacts (CI, Pages), so finding evidence/titles MUST
+  be run through the SPEC-005 §4 host-identity redaction (the reporter does not
+  anonymize `do_fetch` env dumps / the dependency build root — data-format.md).
+
+## Changelog
+- **2026-07-03 (M4-02):** Added the host-identity redaction requirement to §4.
+  `report.json`/HTML are shareable artifacts, so evidence must be scrubbed of
+  `SSH_AUTH_SOCK` socket paths and `/<host>/<user>/<date>/…` build roots, the
+  same as the LLM summary (SPEC-005 §4).
 
 ## 5. Acceptance tests
 - **T1** `yer report error-reports/*.txt --html out/` writes `out/index.html`

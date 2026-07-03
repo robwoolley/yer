@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from ..models import Build, Finding, FindingGroup, Report
+from ..redact import redact_host_identity
 
 SCHEMA_VERSION = "1.0"
 
@@ -29,16 +30,17 @@ def _build_dict(build: Build) -> dict[str, Any]:
 
 def _finding_dict(finding: Finding, groups: dict[str, FindingGroup]) -> dict[str, Any]:
     group = groups.get(finding.signature)
+    # Published artifact -> redact host identity from evidence/title (SPEC-004 §4).
     return {
         "category": finding.category,
         "severity": finding.severity,
         "confidence": finding.confidence,
-        "title": finding.title,
+        "title": redact_host_identity(finding.title),
         "recipe": finding.recipe,
         "task": finding.task,
         "file": finding.file,
         "line": finding.line,
-        "evidence": finding.evidence,
+        "evidence": [redact_host_identity(line) for line in finding.evidence],
         "signature": finding.signature,
         "cascade_of": finding.cascade_of,
         "occurrences": group.occurrences if group else 1,
