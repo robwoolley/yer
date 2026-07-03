@@ -17,6 +17,7 @@ from collections.abc import Sequence
 from . import __version__, ingest
 from .analyze import analyze
 from .models import Finding, Report
+from .summarize import DEFAULT_BUDGET, summarize, to_json, to_markdown
 
 # Severity thresholding for --fail-on (SPEC-003 §4): error > failure > warning > anomaly.
 _SEVERITY_RANK = {"error": 0, "failure": 1, "warning": 2, "anomaly": 3}
@@ -50,6 +51,18 @@ def build_parser() -> argparse.ArgumentParser:
     analyze_cmd.add_argument("--max-evidence", type=int, default=15, metavar="N")
     analyze_cmd.add_argument("--no-color", action="store_true", help="disable ANSI color")
     analyze_cmd.add_argument("-o", "--output", help="write output to a file (default: stdout)")
+
+    sum_cmd = subparsers.add_parser("summarize", help="emit a token-bounded LLM summary")
+    sum_cmd.add_argument(
+        "inputs", nargs="+", help="report files, globs, directories, or - for stdin"
+    )
+    sum_cmd.add_argument("--for-llm", action="store_true", help="(implied by the subcommand)")
+    sum_cmd.add_argument("--format", choices=["md", "json"], default="md")
+    sum_cmd.add_argument("--budget", type=int, default=DEFAULT_BUDGET, metavar="TOKENS")
+    sum_cmd.add_argument(
+        "--include-config", action="store_true", help="include build config (still redacted)"
+    )
+    sum_cmd.add_argument("-o", "--output", help="write output to a file (default: stdout)")
     return parser
 
 
@@ -180,11 +193,37 @@ def _run_analyze(args: argparse.Namespace) -> int:
     return code
 
 
+def _write_output(text: str, output: str | None) -> int | None:
+    """Write text to a file or stdout. Returns 2 on write error, else None."""
+    if output:
+        try:
+            with open(output, "w", encoding="utf-8") as handle:
+                handle.write(text + "\n")
+        except OSError as exc:
+            print(f"yer: cannot write output: {exc}", file=sys.stderr)
+            return 2
+    else:
+        print(text)
+    return None
+
+
+def _run_summarize(args: argparse.Namespace) -> int:
+    builds = ingest.load_reports(args.inputs)
+    if not builds:
+        print(f"yer: no matching inputs: {' '.join(args.inputs)}", file=sys.stderr)
+        return 2
+    summary = summarize(analyze(builds), budget=args.budget, include_config=args.include_config)
+    text = to_json(summary) if args.format == "json" else to_markdown(summary)
+    return _write_output(text, args.output) or 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.command == "analyze":
         return _run_analyze(args)
+    if args.command == "summarize":
+        return _run_summarize(args)
     parser.print_help()
     return 0
 

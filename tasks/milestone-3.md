@@ -73,7 +73,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
   - DoD: **SPEC-005 T4** — with `--include-config`, a `password`-bearing line is
     redacted in the output.
 
-- [ ] **M3-07 — `yer summarize` CLI subcommand**
+- [x] **M3-07 — `yer summarize` CLI subcommand**
   - Spec: SPEC-003 §1 (`summarize`); SPEC-005.
   - `cli.py` `summarize` subcommand: input resolution (SPEC-001),
     `--format {md,json}` (default `md`), `--budget <tokens>`, `--include-config`,
