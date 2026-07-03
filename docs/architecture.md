@@ -119,6 +119,19 @@ class Finding:
     signature: str       # normalized hash for dedup/trends
     confidence: float
     cascade_of: str | None   # signature of the finding this likely cascades from
+
+@dataclass
+class FindingGroup:        # cross-report dedup group (SPEC-002 §4/§6)
+    signature: str; occurrences: int; affected_recipes: list[str]
+
+@dataclass
+class Summary:             # token-bounded LLM projection (SPEC-005 §3)
+    build: Build | None; findings: list["Finding"]      # selected top-K
+    findings_omitted: int; log_lines_dropped: int       # honest-loss block
+
+@dataclass
+class Report:              # analyzer output (SPEC-002 §6)
+    builds: list["Build"]; findings: list["Finding"]; groups: list["FindingGroup"]
 ```
 
 `signature` = hash of the normalized title/evidence with paths, line numbers,
@@ -132,3 +145,11 @@ false merges); the trend layer can tune it later.
   no timestamps in the canonical doc; wall-clock only in HTML chrome).
 - **Extensibility:** new failure type = new rule module + fixture. No core edit.
 - **Performance target:** analyze the full 77-file corpus in < a few seconds.
+
+## Changelog
+
+- **2026-07-03 (M0-02):** Drew `Summary`, `Report`, and `FindingGroup` into the
+  §"The data model" code block. They were already referenced (models list;
+  SPEC-002 §6 "dedup groups"; SPEC-005 §3) but not shown here; `FindingGroup` is
+  the concrete type for SPEC-002's cross-report dedup groups. No behavior change
+  — implemented in `models.py` as pure, defaultable dataclasses.

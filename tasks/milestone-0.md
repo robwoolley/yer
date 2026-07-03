@@ -17,7 +17,7 @@ Task id format `M0-nn`. Each task cites its spec and a definition of done (DoD).
     `console_scripts: yer = yocto_error_reports.cli:main`, Python `>=3.11`.
   - DoD: `pipx install .` then `yer --version` prints a version.
 
-- [ ] **M0-02 — Data model (`models.py`)**
+- [x] **M0-02 — Data model (`models.py`)**
   - Spec: architecture §"The data model"; SPEC-001/002 field lists.
   - Dataclasses: `Build`, `Failure`, `LogLine`, `Finding`, `Summary`, `Report`.
   - DoD: importable, typed, `mypy` clean; no logic.
