@@ -25,7 +25,7 @@ stay **stdlib-only**; no CLI/render concerns.
     → `kind="message"`) and **T4** (missing `recipe` → `None`) pass on
     `dependency_moveit.json`.
 
-- [ ] **M1-02 — Input resolution: paths, globs, dirs, stdin**
+- [x] **M1-02 — Input resolution: paths, globs, dirs, stdin**
   - Spec: SPEC-001 §1 (Inputs, Output).
   - Accept file paths, globs, directories (recursively yield files that parse as
     reports), and `-` (stdin). De-duplicate repeated paths; return `list[Build]`
