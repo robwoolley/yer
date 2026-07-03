@@ -46,7 +46,7 @@ Task id format `M0-nn`. Each task cites its spec and a definition of done (DoD).
   - Add a small script/README documenting how fixtures were derived.
   - DoD: fixtures load as JSON; a test enumerates them; no secrets present.
 
-- [ ] **M0-07 — Corpus smoke harness**
+- [x] **M0-07 — Corpus smoke harness**
   - Spec: SPEC-001 T1 (never crash on the corpus).
   - A test (marked slow/optional) that loads every file in `error-reports/` and
     asserts no exception once ingest exists (stub-tolerant until M1).
