@@ -67,8 +67,21 @@ Structured for programmatic feeding:
 - Even with opt-in, **redact** obvious secrets: lines matching
   password/token/key/secret patterns, and `*_password`/`allow-empty-password`
   style entries seen in samples.
-- Anonymized `TOPDIR` paths are preserved as-is (already scrubbed by the
-  reporter); do not re-expand.
+- **Redact host identity from evidence — always** (not only under
+  `--include-config`). The reporter anchors most build paths to `TOPDIR/...` but
+  does **not** anonymize everything: `do_fetch` env dumps carry an
+  `SSH_AUTH_SOCK` socket path and the dependency `RPROVIDES` message carries an
+  absolute `/<host-or-mount>/<user>/<date>/…` build root (data-format.md). The
+  summary is a **shareable** artifact piped to an external service, so it MUST
+  redact these host-identity structures from evidence/titles.
+- Anonymized `TOPDIR` paths are preserved as-is; do not re-expand.
+
+## Changelog
+- **2026-07-03 (M3-05):** Corrected §4. An earlier bullet claimed anonymized
+  paths were "already scrubbed by the reporter" — false for `do_fetch` env dumps
+  and the dependency `RPROVIDES` build root, which leak a username/hostname
+  (matching the data-format.md correction). Added the requirement that the
+  summary redact host-identity **structure** from evidence unconditionally.
 
 ## 5. Acceptance tests
 - **T1** Summary for the largest corpus report is under the default token

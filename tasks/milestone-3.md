@@ -52,7 +52,7 @@ concrete SPEC-005 acceptance test. Core `summarize` is **stdlib-only** and makes
   - DoD: **SPEC-005 T2** — JSON validates and includes a `truncated` block when
     trimming occurred; byte-stable across runs.
 
-- [ ] **M3-05 — Privacy: exclude config + redact host identity from evidence**
+- [x] **M3-05 — Privacy: exclude config + redact host identity from evidence**
   - Spec: SPEC-005 §4 (**update first**: the reporter does NOT anonymize
     everything — `do_fetch` env dumps and dependency build roots leak host
     identity, per data-format.md; §4's "already scrubbed by the reporter"

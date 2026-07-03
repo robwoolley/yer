@@ -13,6 +13,7 @@ import json
 from dataclasses import replace
 
 from .models import Build, Finding, Report, Summary
+from .redact import redact_host_identity
 
 # Per-category hint for the LLM (SPEC-005 §3 `likely_cause`).
 _LIKELY_CAUSE = {
@@ -55,16 +56,20 @@ def _fit_finding(
 
     The rank-1 root cause always keeps at least the last (root) evidence line.
     """
+    # redact host identity before selection so the summary is shareable and the
+    # token budget accounts for the redacted text (SPEC-005 §4).
+    title = redact_host_identity(finding.title)
     if 0 <= max_evidence < len(finding.evidence):
-        evidence = finding.evidence[-max_evidence:]
+        source = finding.evidence[-max_evidence:]
     else:
-        evidence = list(finding.evidence)
+        source = finding.evidence
+    evidence = [redact_host_identity(line) for line in source]
     # drop leading lines until it fits (keep the tail — the real error)
-    while evidence and _tokens("\n".join([finding.title, *evidence])) > token_budget:
+    while evidence and _tokens("\n".join([title, *evidence])) > token_budget:
         evidence = evidence[1:]
     if is_root and not evidence and finding.evidence:
-        evidence = [finding.evidence[-1]]  # never drop the root error line
-    return replace(finding, evidence=evidence)
+        evidence = [redact_host_identity(finding.evidence[-1])]  # never drop the root line
+    return replace(finding, title=title, evidence=evidence)
 
 
 def summarize(
