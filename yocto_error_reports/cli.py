@@ -21,6 +21,7 @@ from . import __version__, ingest
 from .analyze import analyze
 from .models import Finding, Report
 from .render.json_out import to_report_json
+from .render.sarif import to_sarif
 from .render.static import to_html
 from .summarize import DEFAULT_BUDGET, summarize, to_json, to_markdown
 
@@ -42,7 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     analyze_cmd.add_argument(
         "inputs", nargs="+", help="report files, globs, directories, or - for stdin"
     )
-    analyze_cmd.add_argument("--format", choices=["text", "json"], default="text")
+    analyze_cmd.add_argument("--format", choices=["text", "json", "sarif"], default="text")
     analyze_cmd.add_argument(
         "--fail-on",
         choices=["error", "failure", "warning", "none"],
@@ -67,10 +68,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--html", required=True, metavar="DIR", help="output directory (index.html + report.json)"
     )
     report_cmd.add_argument(
-        "--format", choices=["json"], help="also emit canonical JSON to -o (SPEC-004 §1)"
+        "--format",
+        choices=["json", "sarif"],
+        help="also emit canonical JSON (SPEC-004 §1) or SARIF (§3) to -o",
     )
     report_cmd.add_argument(
-        "-o", "--output", metavar="PATH", help="path for the extra --format json output"
+        "-o", "--output", metavar="PATH", help="path for the extra --format json/sarif output"
     )
     report_cmd.add_argument(
         "--fail-on",
@@ -207,7 +210,9 @@ def _run_analyze(args: argparse.Namespace) -> int:
     _truncate_evidence(findings, args.max_evidence)
     code = _exit_code(findings, args.fail_on)
 
-    if args.format == "json":
+    if args.format == "sarif":
+        text = to_sarif(replace(report, findings=findings), tool_version=__version__)
+    elif args.format == "json":
         text = render_json(findings, report)
     else:
         text = render_text(findings, code, color=_should_color(args.no_color, args.output))
@@ -264,8 +269,12 @@ def _run_report(args: argparse.Namespace) -> int:
         print(f"yer: cannot write artifacts: {exc}", file=sys.stderr)
         return 2
 
-    if args.format == "json" and args.output:
-        rc = _write_output(json_text, args.output)
+    if args.format and args.output:
+        if args.format == "sarif":
+            extra = to_sarif(rendered, tool_version=__version__)
+        else:
+            extra = json_text
+        rc = _write_output(extra, args.output)
         if rc is not None:
             return rc
     return code

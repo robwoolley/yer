@@ -42,7 +42,7 @@ core.
   - DoD: **SPEC-004 T7** — output is valid 2.1.0 with the specified mapping; a
     finding with `file`/`line` yields a `physicalLocation`, one without omits it.
 
-- [ ] **M5-03 — Wire SARIF into the CLI (`--format sarif`)**
+- [x] **M5-03 — Wire SARIF into the CLI (`--format sarif`)**
   - Spec: SPEC-003 §1 (`analyze --format {text,json,sarif}`); SPEC-004 §3.
   - Add `sarif` to `analyze --format` (and accept `report --format sarif -o
     <path>` to emit `results.sarif` alongside the HTML/JSON artifacts). Exit-code
