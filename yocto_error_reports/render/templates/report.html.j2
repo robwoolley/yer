@@ -21,6 +21,8 @@
     margin: 0; padding: 1.5rem; max-width: 60rem; margin-inline: auto;
     background: var(--bg); color: var(--fg);
     font: 15px/1.5 -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+    /* long unbroken tokens (paths, URLs) wrap instead of widening the page */
+    overflow-wrap: anywhere;
   }
   h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
   .meta { color: var(--muted); font-size: .9rem; margin: 0 0 1rem; }
@@ -51,8 +53,10 @@
   button.copy.copied { color: var(--fg); }
   pre.evidence {
     background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
-    padding: .6rem .8rem; margin: .5rem 0 .25rem;
-    overflow-x: auto; white-space: pre; font-size: .85rem;
+    padding: .6rem .8rem; margin: .5rem 0 .25rem; max-width: 100%;
+    /* evidence keeps exact formatting: it scrolls in its own box, never wraps
+       and never widens the page (overflow-wrap does not apply under pre). */
+    overflow-x: auto; white-space: pre; overflow-wrap: normal; font-size: .85rem;
   }
   footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
 </style>

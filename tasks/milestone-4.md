@@ -54,7 +54,7 @@ concerns out of the core.
   - DoD: a button is present per finding and copies the finding's Markdown
     summary (verify the payload is embedded in the page).
 
-- [ ] **M4-05 — Responsive layout: long lines never break the page**
+- [x] **M4-05 — Responsive layout: long lines never break the page**
   - Spec: SPEC-004 §2, T5.
   - Wide content (evidence `<pre>`, tables) scrolls within its own
     `overflow-x` container; the page body never scrolls horizontally.

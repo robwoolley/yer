@@ -4,6 +4,8 @@ Acceptance tests copied from SPEC-004 §5:
     T2  index.html opens with no network access; contains no http(s):// asset
         references.
     T4  A finding with file/line renders a location; one without still renders.
+    T5  Long evidence lines do not cause horizontal page scroll (evidence
+        scrolls within its own overflow-x container; long tokens elsewhere wrap).
     T6  Each finding renders a "Copy for Claude" button whose embedded payload
         is that finding's SPEC-005 Markdown (contains the SPEC-005 header and
         the finding's root-cause line). Copying is inline JS with no network.
@@ -48,6 +50,37 @@ def test_t4_finding_without_location_still_renders():
     html = _html("dependency_moveit.json")  # dependency finding has no file/line
     assert "dependency" in html
     assert "moveit-ros-planning-interface-dev" in html
+
+
+def test_t5_long_lines_do_not_break_the_page():
+    # Synthesize an overlong evidence line and an overlong title token; neither
+    # may widen the page — evidence scrolls in its own container, text wraps.
+    from yocto_error_reports.models import Finding, Report
+
+    long_line = "x" * 4000
+    long_token = "/" + "seg-" * 500 + "/CMakeLists.txt"
+    report = Report(
+        findings=[
+            Finding(
+                category="configure",
+                severity="error",
+                confidence=0.9,
+                title="package considered NOT FOUND " + long_token,
+                recipe="demo",
+                task="do_configure",
+                evidence=[long_line],
+            )
+        ]
+    )
+    html = to_html(report, tool_version="1.0.0")
+    # evidence has its own horizontal scroll container (does not wrap; scrolls)
+    assert re.search(r"pre\.evidence\s*\{[^}]*overflow-x:\s*auto", html, re.S)
+    assert re.search(r"pre\.evidence\s*\{[^}]*white-space:\s*pre\b", html, re.S)
+    # long tokens outside <pre> wrap instead of widening the page body
+    assert re.search(r"overflow-wrap:\s*(anywhere|break-word)", html)
+    # the overlong content is present but constrained by the above, not stripped
+    assert long_line in html
+    assert long_token in html
 
 
 def test_t6_copy_button_per_finding_with_markdown_payload():
