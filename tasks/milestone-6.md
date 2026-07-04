@@ -20,7 +20,7 @@ concrete SPEC-006 acceptance test. New core `trends/` modules stay **stdlib-only
 
 ---
 
-- [ ] **M6-01 — Run record + append-only JSONL store (`trends/store.py`)**
+- [x] **M6-01 — Run record + append-only JSONL store (`trends/store.py`)**
   - Spec: SPEC-006 §1.
   - `record_run(report, *, store_path, tool_version) -> RunRecord` appends one
     JSON-Lines row (`run_id`, `recorded_at`, `tool_version`, `source_count`,

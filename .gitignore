@@ -21,3 +21,6 @@ venv/
 
 # Optional site-specific fixture redactions (never commit)
 tests/fixtures/redactions.local
+
+# Local cross-run trend store (SPEC-006 §1; never commit — history, not source)
+.yer/
