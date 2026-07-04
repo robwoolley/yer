@@ -32,7 +32,7 @@ concrete SPEC-006 acceptance test. New core `trends/` modules stay **stdlib-only
     malformed line skipped, not fatal) and **T3** (a run record contains no
     host-identity structure, no config, no evidence, no input paths).
 
-- [ ] **M6-02 — Cross-run diff + signature history (`trends/diff.py`)**
+- [x] **M6-02 — Cross-run diff + signature history (`trends/diff.py`)**
   - Spec: SPEC-006 §2 (history fold) and §3 (classification).
   - Fold the store into per-signature history (first/last seen, `runs_present`,
     `total_occurrences`, `current_streak`), then
