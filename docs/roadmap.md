@@ -22,6 +22,7 @@ leverage output. HTML, SARIF, and trends follow.
 | **M4** | Static report | `yer report --html` writes self-contained HTML + canonical `report.json`; deterministic. | [004](specs/SPEC-004-report-render.md) |
 | **M5** | CI hardening | SARIF output, documented exit-code contract, GitHub Actions example, artifact publishing verified. | 003, 004 |
 | **M6** | Trends (stretch) | Append runs to a store; diff signatures across builds; regression/new-failure view in HTML. | [006](specs/SPEC-006-trends.md) |
+| **M7** | Release & distribution | `pipx install yocto-error-reports`; tag-triggered PyPI publish via Trusted Publishing; reproducible, host-data-free artifacts. | [007](specs/SPEC-007-release.md) |
 
 ## Milestone detail
 
@@ -65,6 +66,13 @@ leverage output. HTML, SARIF, and trends follow.
 ### M6 — Trends (stretch)
 - Signature store, cross-build diff, regression/new/fixed views. See
   [SPEC-006](specs/SPEC-006-trends.md) (Approved).
+
+### M7 — Release & distribution
+- PyPI-ready metadata, build/validate (sdist + wheel, `twine check`), a
+  tag-triggered publish workflow using Trusted Publishing (OIDC, no stored
+  secrets), a tag/`__version__`/CHANGELOG consistency gate, and a
+  no-host-data-ships check. See [SPEC-007](specs/SPEC-007-release.md)
+  (Draft — ratify before implementing).
 
 ## Tracking
 
