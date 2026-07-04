@@ -1,8 +1,8 @@
 # Quick Start
 
-> **Status:** `yer analyze` and `yer summarize` are implemented and tested.
-> `yer report --html` (M4) and SARIF (M5) are still the **target** experience
-> defined by the specs — track progress in [roadmap.md](roadmap.md).
+> **Status:** all four subcommands — `analyze`, `report`, `summarize`, and
+> `trend` — are implemented and tested (v0.1.0). See [CHANGELOG.md](../CHANGELOG.md)
+> and, for CI, [ci.md](ci.md).
 
 ## Install
 
@@ -32,7 +32,7 @@ cat report.txt | yer analyze -          # stdin
 
 # Machine-readable output
 yer analyze error-reports/*.txt --format json -o report.json
-yer analyze error-reports/*.txt --format sarif -o results.sarif   # (fast-follow)
+yer analyze error-reports/*.txt --format sarif -o results.sarif   # code-scanning
 ```
 
 ### Get a fix suggestion from Claude
@@ -75,7 +75,30 @@ category is printed per failure).
 ```bash
 yer report error-reports/*.txt --html out/
 open out/index.html         # self-contained; no server required
+
+# annotate the HTML with new/recurring/regressed badges from history
+yer report error-reports/*.txt --html out/ --store .yer/trends.jsonl
 ```
+
+### Track trends across builds
+
+`yer trend` records each run to a local append-only store (keyed by the stable
+finding `signature`) and diffs a new run against history — **new / recurring /
+regressed / fixed** — so CI can fail only on *new* regressions.
+
+```bash
+# seed the baseline once (no gate)
+yer trend error-reports/*.txt --store .yer/trends.jsonl --record
+
+# later builds: record and fail only if something new/regressed appears
+yer trend error-reports/*.txt --store .yer/trends.jsonl --record --fail-on-new
+
+# inspect the diff as JSON
+yer trend error-reports/*.txt --store .yer/trends.jsonl --format json
+```
+
+The store holds only redacted titles + signatures + counts — never evidence,
+config, or paths — and should stay gitignored (`.yer/`).
 
 ## CI usage
 
@@ -103,12 +126,16 @@ publishable artifacts.
 or parse error. Use `--fail-on warning` to gate more strictly, or run without
 `--fail-on` to always exit `0` and just publish the report.
 
+For SARIF code-scanning upload and a trend-based regression gate
+(`yer trend --fail-on-new`), see the full recipes in [ci.md](ci.md).
+
 ## Commands at a glance
 
 | Command | Purpose |
 | --- | --- |
 | `yer analyze <inputs>` | Parse + classify; print findings (`--format text/json/sarif`). |
-| `yer report <inputs> --html <dir>` | Write self-contained HTML + `report.json`. |
-| `yer summarize <inputs> --for-llm` | Emit token-bounded summary for Claude. |
+| `yer report <inputs> --html <dir>` | Write self-contained HTML + `report.json` (+ SARIF via `--format sarif -o`). |
+| `yer summarize <inputs>` | Emit token-bounded summary for Claude (`--format md/json`). |
+| `yer trend <inputs> --store <path>` | Diff a run against history; gate with `--fail-on-new`. |
 
 See [SPEC-003](specs/SPEC-003-cli.md) for the full CLI contract.

@@ -5,9 +5,11 @@ A command-line tool that reads Yocto/OpenEmbedded `error-report.txt` files,
 and turns them into:
 
 - **Rich terminal output** for developers debugging a failed build.
-- **Self-contained static HTML + JSON report artifacts** for CI to publish.
+- **Self-contained static HTML + JSON + SARIF artifacts** for CI to publish.
 - **Compact, token-bounded summaries** designed to be fed to Claude for
-  automated root-cause analysis and fix suggestinons.
+  automated root-cause analysis and fix suggestions.
+- **Cross-run trends** — new / recurring / regressed / fixed failures, with a
+  `--fail-on-new` regression gate.
 
 > `error-report.txt` files are the JSON payloads produced by OpenEmbedded's
 > `report-error` bbclass / `send-error-report`. See
@@ -15,10 +17,10 @@ and turns them into:
 
 ## Status
 
-📐 **Planning / spec phase.** This repository currently contains the
-specifications, architecture, and roadmap. No application code is written yet.
-Implementation is tracked in [docs/roadmap.md](docs/roadmap.md) and
-[tasks/](tasks/).
+✅ **Implemented (v0.1.0).** The full pipeline (`ingest → parse → analyze →
+summarize → render`) plus cross-run trends is built, tested against the real
+report corpus, and green in CI. Milestones M0–M6 are complete — see
+[docs/roadmap.md](docs/roadmap.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Why
 
@@ -30,17 +32,22 @@ fetch / dependency), deduplicates repeats, and presents a ranked list of
 **findings** — the same findings drive the terminal view, the HTML report, and
 the LLM summary.
 
-## Quick example (target UX)
+## Quick example
 
 ```console
 $ yer analyze error-reports/error_report_20260701180755.txt
-gz-gui9  do_configure  ✖ configure-error (confidence 0.86)
-  CMake Error: package "Qt6" considered NOT FOUND
-  CMakeLists.txt:110 (gz_configure_build)
-1 error, 0 warnings — exit 1
+[ERROR] gz-gui9 [do_configure] - configure (0.85)
+    package "Qt5" considered NOT FOUND
+    at CMakeLists.txt:86
+      | -- Could NOT find Qt5QuickControls2 (missing: Qt5QuickControls2_DIR)
+      | but it set Qt5_FOUND to FALSE so package "Qt5" is considered to be NOT
 
-$ yer report error-reports/*.txt --html out/         # static dashboard
-$ yer summarize error-reports/err.txt --for-llm | claude -p "Fix this build failure"
+1 error(s), 0 warning(s) - exit 1
+
+$ yer report error-reports/*.txt --html out/                 # static dashboard + report.json
+$ yer analyze error-reports/*.txt --format sarif -o out.sarif # code-scanning annotations
+$ yer summarize error-reports/err.txt | claude -p "Fix this build failure"
+$ yer trend error-reports/*.txt --store .yer/trends.jsonl --record --fail-on-new  # regression gate
 ```
 
 ## Documentation map
@@ -48,23 +55,26 @@ $ yer summarize error-reports/err.txt --for-llm | claude -p "Fix this build fail
 | Doc | Purpose |
 | --- | --- |
 | [docs/quickstart.md](docs/quickstart.md) | Install and first run (dev + CI). |
+| [docs/ci.md](docs/ci.md) | CI recipes: exit codes, SARIF upload, trend gating. |
 | [docs/architecture.md](docs/architecture.md) | The five-stage pipeline and module layout. |
 | [docs/roadmap.md](docs/roadmap.md) | Milestones and the development plan. |
 | [docs/data-format.md](docs/data-format.md) | Reference for the `error-report.txt` format. |
 | [docs/spec-driven-workflow.md](docs/spec-driven-workflow.md) | How specs, plans, and tasks are organized for Claude Code. |
-| [docs/specs/](docs/specs/) | Component specifications (SPEC-000…005). |
+| [docs/specs/](docs/specs/) | Component specifications (SPEC-000…006). |
 | [tasks/](tasks/) | Actionable, per-milestone task lists. |
+| [CHANGELOG.md](CHANGELOG.md) | Release history. |
 | [CLAUDE.md](CLAUDE.md) | Operating guide for Claude Code in this repo. |
 
 ## Design commitments (v1)
 
-- **Language:** Python 3.11+. Core parser/analyzer has **no runtime deps**;
-  rendering adds Jinja2, terminal adds `rich`.
-- **Inputs (v1):** `error-report.txt` JSON files (globs, dirs, stdin).
-- **Outputs (v1):** terminal, `report.json`, self-contained HTML. SARIF + trend
-  store are fast-follows.
+- **Language:** Python 3.11+. Core `parse`/`analyze`/`models` are **stdlib-only**;
+  rendering adds Jinja2.
+- **Inputs:** `error-report.txt` JSON files (globs, dirs, stdin).
+- **Outputs:** terminal, canonical `report.json`, self-contained HTML, SARIF
+  2.1.0, and a local cross-run trend store.
 - **LLM:** emits a structured summary only — **no API calls in the core tool.**
-- **CI-first:** meaningful exit codes and machine-readable output.
+- **CI-first:** meaningful exit codes, machine-readable output, deterministic
+  artifacts, and privacy redaction of host identity in everything shareable.
 
 ## License
 
