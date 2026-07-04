@@ -59,6 +59,7 @@ $ yer trend error-reports/*.txt --store .yer/trends.jsonl --record --fail-on-new
 | [docs/architecture.md](docs/architecture.md) | The five-stage pipeline and module layout. |
 | [docs/roadmap.md](docs/roadmap.md) | Milestones and the development plan. |
 | [docs/data-format.md](docs/data-format.md) | Reference for the `error-report.txt` format. |
+| [docs/corpus.md](docs/corpus.md) | How to add to the sample corpus and derive fixtures. |
 | [docs/spec-driven-workflow.md](docs/spec-driven-workflow.md) | How specs, plans, and tasks are organized for Claude Code. |
 | [docs/specs/](docs/specs/) | Component specifications (SPEC-000…006). |
 | [tasks/](tasks/) | Actionable, per-milestone task lists. |

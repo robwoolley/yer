@@ -29,11 +29,28 @@ the dataclasses in `models.py`. Details: [docs/architecture.md](docs/architectur
 
 ## Ground truth: the sample corpus
 
-- Real reports live in [`error-reports/`](error-reports/) (77 files). **Use
-  them.** Never invent format details — verify against these.
+- Real reports live in [`error-reports/`](error-reports/) (a local, **gitignored**
+  set of `error_report_*.txt` JSON files). **Use them.** Never invent format
+  details — verify against these.
 - The format is documented in [docs/data-format.md](docs/data-format.md).
 - Any new failure pattern you handle MUST get a fixture under `tests/fixtures/`
   (anonymized) plus a golden-output test.
+
+### Working with the corpus
+
+- **Adding reports:** drop `error_report_*.txt` files into `error-reports/`.
+  It is gitignored and local-only — never commit real reports; there is no index
+  to update, the tools auto-discover via directory scan / globs.
+- **Verify after adding:** `pytest -m slow` runs the corpus harness
+  (`test_corpus_smoke.py`, `test_ci_artifacts.py`) over every file — must not
+  crash and must parse within budget. These tests **skip** when the corpus is
+  absent (e.g. in CI), so they never block contributors without it.
+- **Promoting a report to a fixture** (do this for any new failure pattern):
+  add a row to the `MANIFEST` in `tests/fixtures/derive_fixtures.py`, run
+  `python tests/fixtures/derive_fixtures.py` (applies the two scrub passes), and
+  commit the generated, anonymized `.json`. The script fails if any host-identity
+  structure survives.
+- Full guide: [docs/corpus.md](docs/corpus.md).
 
 ## Conventions
 
