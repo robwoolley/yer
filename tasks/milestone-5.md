@@ -19,7 +19,7 @@ core.
 
 ---
 
-- [ ] **M5-01 — SARIF acceptance tests (spec-first: SPEC-004 §3 → §5)**
+- [x] **M5-01 — SARIF acceptance tests (spec-first: SPEC-004 §3 → §5)**
   - Spec: SPEC-004 §3 (**update first**): §3 defines the SARIF mapping but §5
     has no SARIF acceptance test. Add **T7/T8** to §5 (with a dated `## Changelog`
     note) making the mapping verifiable: a 2.1.0 document with one `run`, tool
