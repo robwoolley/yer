@@ -64,7 +64,7 @@ concrete SPEC-006 acceptance test. New core `trends/` modules stay **stdlib-only
     still holds (canonical `report.json` body byte-identical across runs for the
     same inputs+store) and **T2** (no external asset references) still holds.
 
-- [ ] **M6-05 — Docs: trend CI gating + gitignore the store**
+- [x] **M6-05 — Docs: trend CI gating + gitignore the store**
   - Spec: SPEC-006 §1, §4; SPEC-003 §4.
   - Extend `docs/ci.md` with a `yer trend --record --fail-on-new` regression-gate
     example (store persisted/restored across runs via cache/artifact); add
