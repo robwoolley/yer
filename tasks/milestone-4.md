@@ -37,7 +37,7 @@ concerns out of the core.
   - DoD: a `report.json` of a synthetic host-identity report contains no
     host-identity structure; config excluded by default.
 
-- [ ] **M4-03 — Self-contained static HTML (`render/static.py` + templates)**
+- [x] **M4-03 — Self-contained static HTML (`render/static.py` + templates)**
   - Spec: SPEC-004 §2.
   - Jinja2 → one `index.html`: **inline** CSS/JS, no external requests
     (assets as data-URIs), light & dark via `prefers-color-scheme`, findings
