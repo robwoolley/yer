@@ -61,7 +61,7 @@ concerns out of the core.
   - DoD: **SPEC-004 T5** — long evidence lines do not cause horizontal page
     scroll (assert the scroll-container CSS/markup around evidence).
 
-- [ ] **M4-06 — `yer report` CLI subcommand**
+- [x] **M4-06 — `yer report` CLI subcommand**
   - Spec: SPEC-003 §1 (`report`); SPEC-004.
   - `cli.py` `report` subcommand: input resolution (SPEC-001), `--html <dir>`
     (required), optional `--format json -o <path>` for the canonical JSON

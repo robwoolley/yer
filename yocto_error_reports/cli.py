@@ -1,9 +1,10 @@
 """CLI entrypoint for `yer` (SPEC-003).
 
-`--version` plus the `analyze` subcommand: parse + analyze inputs, render ranked
-findings as text or JSON, apply category/recipe filters, and return the CI exit
-code. Rendering and exit-code policy live here so they never leak into
-`parse`/`analyze`. `report`/`summarize` land in M3/M4.
+`--version` plus the `analyze`, `report`, and `summarize` subcommands: parse +
+analyze inputs, then render ranked findings (text/JSON), static artifacts
+(HTML + canonical JSON), or a token-bounded LLM summary, applying category/recipe
+filters and returning the CI exit code. Rendering and exit-code policy live here
+so they never leak into `parse`/`analyze`.
 """
 
 from __future__ import annotations
@@ -13,10 +14,14 @@ import json
 import os
 import sys
 from collections.abc import Sequence
+from dataclasses import replace
+from pathlib import Path
 
 from . import __version__, ingest
 from .analyze import analyze
 from .models import Finding, Report
+from .render.json_out import to_report_json
+from .render.static import to_html
 from .summarize import DEFAULT_BUDGET, summarize, to_json, to_markdown
 
 # Severity thresholding for --fail-on (SPEC-003 §4): error > failure > warning > anomaly.
@@ -51,6 +56,32 @@ def build_parser() -> argparse.ArgumentParser:
     analyze_cmd.add_argument("--max-evidence", type=int, default=15, metavar="N")
     analyze_cmd.add_argument("--no-color", action="store_true", help="disable ANSI color")
     analyze_cmd.add_argument("-o", "--output", help="write output to a file (default: stdout)")
+
+    report_cmd = subparsers.add_parser(
+        "report", help="write static artifacts: <dir>/index.html + <dir>/report.json"
+    )
+    report_cmd.add_argument(
+        "inputs", nargs="+", help="report files, globs, directories, or - for stdin"
+    )
+    report_cmd.add_argument(
+        "--html", required=True, metavar="DIR", help="output directory (index.html + report.json)"
+    )
+    report_cmd.add_argument(
+        "--format", choices=["json"], help="also emit canonical JSON to -o (SPEC-004 §1)"
+    )
+    report_cmd.add_argument(
+        "-o", "--output", metavar="PATH", help="path for the extra --format json output"
+    )
+    report_cmd.add_argument(
+        "--fail-on",
+        choices=["error", "failure", "warning", "none"],
+        default="error",
+        help="minimum severity that makes the run fail with exit 1 (default: error)",
+    )
+    report_cmd.add_argument(
+        "--category", action="append", metavar="CAT", help="only include this category (repeatable)"
+    )
+    report_cmd.add_argument("--recipe", metavar="NAME", help="only include this recipe")
 
     sum_cmd = subparsers.add_parser("summarize", help="emit a token-bounded LLM summary")
     sum_cmd.add_argument(
@@ -207,6 +238,39 @@ def _write_output(text: str, output: str | None) -> int | None:
     return None
 
 
+def _run_report(args: argparse.Namespace) -> int:
+    """Write `<dir>/index.html` + `<dir>/report.json` (SPEC-004); exit like analyze."""
+    builds = ingest.load_reports(args.inputs)
+    if not builds:
+        print(f"yer: no matching inputs: {' '.join(args.inputs)}", file=sys.stderr)
+        return 2
+
+    report = analyze(builds)
+    findings = _filter(report.findings, args.category, args.recipe)
+    code = _exit_code(findings, args.fail_on)
+    # Filters scope the artifacts too (consistent with analyze). Rendering reads
+    # report.findings; groups are keyed by signature, so extra groups are inert.
+    rendered = replace(report, findings=findings) if (args.category or args.recipe) else report
+
+    json_text = to_report_json(rendered, tool_version=__version__)
+    html_text = to_html(rendered, tool_version=__version__)
+
+    out_dir = Path(args.html)
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "index.html").write_text(html_text, encoding="utf-8")
+        (out_dir / "report.json").write_text(json_text + "\n", encoding="utf-8")
+    except OSError as exc:
+        print(f"yer: cannot write artifacts: {exc}", file=sys.stderr)
+        return 2
+
+    if args.format == "json" and args.output:
+        rc = _write_output(json_text, args.output)
+        if rc is not None:
+            return rc
+    return code
+
+
 def _run_summarize(args: argparse.Namespace) -> int:
     builds = ingest.load_reports(args.inputs)
     if not builds:
@@ -222,6 +286,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "analyze":
         return _run_analyze(args)
+    if args.command == "report":
+        return _run_report(args)
     if args.command == "summarize":
         return _run_summarize(args)
     parser.print_help()
