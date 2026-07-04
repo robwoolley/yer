@@ -44,7 +44,7 @@ concrete SPEC-006 acceptance test. New core `trends/` modules stay **stdlib-only
     prior run ⇒ `regressed`, not `new`), and **T6** (byte-identical trend JSON
     for a fixed inputs+store snapshot).
 
-- [ ] **M6-03 — `yer trend` CLI subcommand**
+- [x] **M6-03 — `yer trend` CLI subcommand**
   - Spec: SPEC-006 §4; SPEC-003 §1.
   - `yer trend <inputs> [--store PATH] [--baseline ID] [--record] [--fail-on-new]`:
     analyze → diff vs baseline → render the trend view; append to the store only

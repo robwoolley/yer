@@ -24,6 +24,8 @@ from .render.json_out import to_report_json
 from .render.sarif import to_sarif
 from .render.static import to_html
 from .summarize import DEFAULT_BUDGET, summarize, to_json, to_markdown
+from .trends.diff import TrendDiff, diff, to_trend_json
+from .trends.store import DEFAULT_STORE, load_runs, record_run
 
 # Severity thresholding for --fail-on (SPEC-003 §4): error > failure > warning > anomaly.
 _SEVERITY_RANK = {"error": 0, "failure": 1, "warning": 2, "anomaly": 3}
@@ -97,6 +99,27 @@ def build_parser() -> argparse.ArgumentParser:
         "--include-config", action="store_true", help="include build config (still redacted)"
     )
     sum_cmd.add_argument("-o", "--output", help="write output to a file (default: stdout)")
+
+    trend_cmd = subparsers.add_parser(
+        "trend", help="diff a run against recorded history (new/recurring/regressed/fixed)"
+    )
+    trend_cmd.add_argument(
+        "inputs", nargs="+", help="report files, globs, directories, or - for stdin"
+    )
+    trend_cmd.add_argument(
+        "--store", metavar="PATH", default=str(DEFAULT_STORE), help="run store (JSONL)"
+    )
+    trend_cmd.add_argument(
+        "--baseline", metavar="RUN_ID", help="baseline run id (default: previous run)"
+    )
+    trend_cmd.add_argument(
+        "--record", action="store_true", help="append this run to the store (else dry run)"
+    )
+    trend_cmd.add_argument(
+        "--fail-on-new", action="store_true", help="exit 1 if any new/regressed finding"
+    )
+    trend_cmd.add_argument("--format", choices=["text", "json"], default="text")
+    trend_cmd.add_argument("-o", "--output", help="write output to a file (default: stdout)")
     return parser
 
 
@@ -290,6 +313,54 @@ def _run_summarize(args: argparse.Namespace) -> int:
     return _write_output(text, args.output) or 0
 
 
+def render_trend(report: Report, result: TrendDiff) -> str:
+    """Render the trend diff as deterministic ASCII (SPEC-006 §4)."""
+    counts = (
+        f"new {len(result.new)}, recurring {len(result.recurring)}, "
+        f"regressed {len(result.regressed)}, fixed {len(result.fixed)}"
+    )
+    baseline = result.baseline_run_id or "(no baseline — first run)"
+    lines = [f"Trend vs {baseline}", counts, ""]
+    for finding in report.findings:  # rank order (SPEC-002 §6)
+        status = result.status.get(finding.signature, "recurring")
+        recipe = finding.recipe or "(unknown recipe)"
+        lines.append(f"[{status}] {recipe} - {finding.category}: {finding.title}")
+    if result.fixed:
+        lines.append("")
+        lines.append("Fixed since baseline:")
+        for fixed in result.fixed:
+            recipe = fixed.recipe or "(unknown recipe)"
+            lines.append(f"[fixed] {recipe} - {fixed.category}: {fixed.title}")
+    return "\n".join(lines)
+
+
+def _run_trend(args: argparse.Namespace) -> int:
+    """Diff a run against recorded history (SPEC-006 §4)."""
+    builds = ingest.load_reports(args.inputs)
+    if not builds:
+        print(f"yer: no matching inputs: {' '.join(args.inputs)}", file=sys.stderr)
+        return 2
+
+    report = analyze(builds)
+    runs = load_runs(args.store)
+    try:
+        result = diff(report, runs, baseline=args.baseline)
+    except ValueError as exc:
+        print(f"yer: {exc}", file=sys.stderr)
+        return 2
+
+    if args.record:  # explicit: a dry run never mutates history
+        record_run(report, store_path=args.store, tool_version=__version__)
+
+    text = to_trend_json(result) if args.format == "json" else render_trend(report, result)
+    rc = _write_output(text, args.output)
+    if rc is not None:
+        return rc
+    if args.fail_on_new and (result.new or result.regressed):
+        return 1
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -299,6 +370,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_report(args)
     if args.command == "summarize":
         return _run_summarize(args)
+    if args.command == "trend":
+        return _run_trend(args)
     parser.print_help()
     return 0
 
