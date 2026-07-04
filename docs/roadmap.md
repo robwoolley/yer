@@ -21,7 +21,7 @@ leverage output. HTML, SARIF, and trends follow.
 | **M3** | LLM summary | `yer summarize --for-llm` emits token-bounded JSON + Markdown; privacy redaction; pipes to `claude`. | [005](specs/SPEC-005-llm-summary.md) |
 | **M4** | Static report | `yer report --html` writes self-contained HTML + canonical `report.json`; deterministic. | [004](specs/SPEC-004-report-render.md) |
 | **M5** | CI hardening | SARIF output, documented exit-code contract, GitHub Actions example, artifact publishing verified. | 003, 004 |
-| **M6** | Trends (stretch) | Append runs to a store; diff signatures across builds; regression/new-failure view in HTML. | future SPEC-006 |
+| **M6** | Trends (stretch) | Append runs to a store; diff signatures across builds; regression/new-failure view in HTML. | [006](specs/SPEC-006-trends.md) |
 
 ## Milestone detail
 
@@ -63,7 +63,8 @@ leverage output. HTML, SARIF, and trends follow.
   annotations on a sample pipeline.
 
 ### M6 — Trends (stretch)
-- Signature store, cross-build diff, regression/new/fixed views. New SPEC-006.
+- Signature store, cross-build diff, regression/new/fixed views. See
+  [SPEC-006](specs/SPEC-006-trends.md) (Draft — ratify before implementing).
 
 ## Tracking
 
