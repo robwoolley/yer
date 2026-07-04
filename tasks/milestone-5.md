@@ -59,7 +59,7 @@ core.
   - DoD: docs contain a copy-pasteable workflow and the exit-code table; a test
     asserts the documented workflow YAML parses and references the artifacts.
 
-- [ ] **M5-05 — Verify artifact publishing on a sample pipeline**
+- [x] **M5-05 — Verify artifact publishing on a sample pipeline**
   - Spec: roadmap M5; SPEC-004 T1/T3, SPEC-004 §3.
   - A CI-smoke test that runs the `report` + `analyze --format sarif` path over
     fixtures and asserts `index.html`, `report.json`, and `results.sarif` are all
