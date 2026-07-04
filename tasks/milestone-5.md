@@ -50,7 +50,7 @@ core.
   - DoD: **SPEC-004 T8** — `yer analyze <inputs> --format sarif` writes valid,
     byte-identical-across-runs SARIF; exit codes match `analyze`.
 
-- [ ] **M5-04 — Documented exit-code contract + GitHub Actions recipe**
+- [x] **M5-04 — Documented exit-code contract + GitHub Actions recipe**
   - Spec: SPEC-003 §4/§5; SPEC-004.
   - Add a docs section (CI recipe) with a runnable GitHub Actions workflow:
     `yer report … --html out/`, `yer analyze … --format sarif -o results.sarif`,
