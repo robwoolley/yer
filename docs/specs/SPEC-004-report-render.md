@@ -68,6 +68,10 @@ self-contained HTML page, and (fast-follow) SARIF.
   anonymize `do_fetch` env dumps / the dependency build root — data-format.md).
 
 ## Changelog
+- **2026-07-04 (M4-04):** Added **T6** to §5. §2 already required a per-finding
+  "Copy for Claude" button; T6 makes it verifiable — each finding embeds that
+  finding's SPEC-005 Markdown as the copy payload, and copying is inline JS with
+  no network.
 - **2026-07-03 (M4-02):** Added the host-identity redaction requirement to §4.
   `report.json`/HTML are shareable artifacts, so evidence must be scrubbed of
   `SSH_AUTH_SOCK` socket paths and `/<host>/<user>/<date>/…` build roots, the
@@ -83,3 +87,6 @@ self-contained HTML page, and (fast-follow) SARIF.
 - **T4** A finding with `file`/`line` renders a location; one without still
   renders.
 - **T5** Long evidence lines do not cause horizontal page scroll.
+- **T6** Each finding renders a "Copy for Claude" button whose embedded payload
+  is that finding's SPEC-005 Markdown (contains the SPEC-005 header and the
+  finding's root-cause line). Copying is inline JS with no network request.

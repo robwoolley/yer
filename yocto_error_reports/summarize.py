@@ -202,6 +202,22 @@ def to_markdown(summary: Summary) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def finding_markdown(
+    build: Build | None,
+    finding: Finding,
+    *,
+    max_evidence: int = DEFAULT_MAX_EVIDENCE,
+) -> str:
+    """SPEC-005 Markdown for a single finding (host identity redacted).
+
+    Used by the HTML "Copy for Claude" button (SPEC-004 §2): a self-contained,
+    pasteable summary of one finding. Evidence is redacted and tail-biased via
+    the same `_fit_finding` path as `summarize`, so no host identity leaks.
+    """
+    trimmed = _fit_finding(finding, max_evidence, DEFAULT_BUDGET, is_root=True)
+    return to_markdown(Summary(build=build, findings=[trimmed]))
+
+
 def _likely_cause(finding: Finding) -> str:
     return _LIKELY_CAUSE.get(finding.category, _LIKELY_CAUSE["unknown"])
 

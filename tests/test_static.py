@@ -1,9 +1,12 @@
-"""M4-03: self-contained static HTML (SPEC-004 §2).
+"""M4-03/M4-04: self-contained static HTML (SPEC-004 §2).
 
 Acceptance tests copied from SPEC-004 §5:
     T2  index.html opens with no network access; contains no http(s):// asset
         references.
     T4  A finding with file/line renders a location; one without still renders.
+    T6  Each finding renders a "Copy for Claude" button whose embedded payload
+        is that finding's SPEC-005 Markdown (contains the SPEC-005 header and
+        the finding's root-cause line). Copying is inline JS with no network.
 """
 
 import re
@@ -45,6 +48,29 @@ def test_t4_finding_without_location_still_renders():
     html = _html("dependency_moveit.json")  # dependency finding has no file/line
     assert "dependency" in html
     assert "moveit-ros-planning-interface-dev" in html
+
+
+def test_t6_copy_button_per_finding_with_markdown_payload():
+    report = analyze([ingest.load_report(FIXTURES / "configure_gz-gui9.json")])
+    html = to_html(report, tool_version="1.0.0")
+    # a button per finding
+    assert html.count(">Copy for Claude<") == len(report.findings)
+    assert html.count('data-markdown="') == len(report.findings)
+    # the embedded payload is SPEC-005 Markdown for the finding
+    assert "# Yocto build failure" in html  # only source is the copy payload
+    assert "Root cause:" in html
+    # inline JS clipboard, with an offline fallback, and no network
+    assert "navigator.clipboard" in html
+    assert "execCommand" in html  # file:// / insecure-context fallback
+    assert _ASSET_URL.search(html) is None
+
+
+def test_t6_copy_payload_is_html_escaped():
+    # titles carry double-quotes ('package "Qt5" ...'); the attribute must escape
+    # them so the payload can't break out of data-markdown="...".
+    html = _html("configure_gz-gui9.json")
+    assert 'package "Qt5"' not in html.split("data-markdown=", 1)[1][:2000]
+    assert "&#34;Qt5&#34;" in html or "&quot;Qt5&quot;" in html
 
 
 def test_empty_report_html_is_valid():

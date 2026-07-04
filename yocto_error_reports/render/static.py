@@ -15,6 +15,7 @@ from typing import Any
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from ..models import Report
+from ..summarize import finding_markdown
 from .json_out import report_document
 
 _TEMPLATES = Path(__file__).resolve().parent / "templates"
@@ -36,6 +37,12 @@ def _group_by_recipe(findings: list[dict[str, Any]]) -> OrderedDict[str, list[di
 def to_html(report: Report, *, tool_version: str, generated_at: str | None = None) -> str:
     """Render the report as a single self-contained HTML page."""
     doc = report_document(report, tool_version=tool_version)
+    # HTML-only augmentation: each finding's SPEC-005 Markdown copy payload
+    # (SPEC-004 §2). Kept out of the canonical report.json schema. doc["findings"]
+    # is built in report.findings order, so the zip pairs 1:1.
+    build = report.builds[0] if report.builds else None
+    for finding_dict, finding in zip(doc["findings"], report.findings, strict=True):
+        finding_dict["copy_markdown"] = finding_markdown(build, finding)
     template = _env.get_template("report.html.j2")
     html = template.render(
         doc=doc,
