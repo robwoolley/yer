@@ -54,7 +54,7 @@ concrete SPEC-006 acceptance test. New core `trends/` modules stay **stdlib-only
     brand-new failure + `--fail-on-new` exits `1`; a run with only recurring
     findings + `--fail-on-new` exits `0`.
 
-- [ ] **M6-04 — Trend render layer (HTML + JSON)**
+- [x] **M6-04 — Trend render layer (HTML + JSON)**
   - Spec: SPEC-006 §4 (render); SPEC-004 §1–2.
   - Additive only: per-finding badge (`new`/`recurring`/`regressed`) and a "fixed
     since baseline" list, in a clearly separated `trend` block. The canonical

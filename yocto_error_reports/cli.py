@@ -87,6 +87,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--category", action="append", metavar="CAT", help="only include this category (repeatable)"
     )
     report_cmd.add_argument("--recipe", metavar="NAME", help="only include this recipe")
+    report_cmd.add_argument(
+        "--store", metavar="PATH", help="run store (JSONL) to annotate the HTML with trend badges"
+    )
+    report_cmd.add_argument(
+        "--baseline", metavar="RUN_ID", help="baseline run id for --store (default: previous run)"
+    )
 
     sum_cmd = subparsers.add_parser("summarize", help="emit a token-bounded LLM summary")
     sum_cmd.add_argument(
@@ -280,8 +286,18 @@ def _run_report(args: argparse.Namespace) -> int:
     # report.findings; groups are keyed by signature, so extra groups are inert.
     rendered = replace(report, findings=findings) if (args.category or args.recipe) else report
 
+    # Optional trend layer (SPEC-006 §4): annotate the HTML with new/recurring/
+    # regressed badges + a fixed list. The canonical report.json is untouched.
+    trend = None
+    if args.store:
+        try:
+            trend = diff(rendered, load_runs(args.store), baseline=args.baseline)
+        except ValueError as exc:
+            print(f"yer: {exc}", file=sys.stderr)
+            return 2
+
     json_text = to_report_json(rendered, tool_version=__version__)
-    html_text = to_html(rendered, tool_version=__version__)
+    html_text = to_html(rendered, tool_version=__version__, trend=trend)
 
     out_dir = Path(args.html)
     try:
