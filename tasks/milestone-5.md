@@ -29,7 +29,7 @@ core.
   - DoD: SPEC-004 §5 lists concrete SARIF acceptance tests (T7 structure/mapping,
     T8 determinism) and §3 carries the Changelog note. No code yet.
 
-- [ ] **M5-02 — `render/sarif.py` SARIF 2.1.0 emitter**
+- [x] **M5-02 — `render/sarif.py` SARIF 2.1.0 emitter**
   - Spec: SPEC-004 §3; SPEC-002 §6 ordering.
   - `to_sarif(report, *, tool_version) -> str`: SARIF 2.1.0 (`$schema`, `version`
     `"2.1.0"`), one `run` with `tool.driver.name = "yer"` + `version`, `rules[]`
