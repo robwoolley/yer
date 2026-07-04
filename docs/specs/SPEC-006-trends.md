@@ -1,6 +1,6 @@
 # SPEC-006 — Trends (cross-run history)
 
-- **Status:** Draft (M6 is a stretch goal; ratify before implementing)
+- **Status:** Approved (2026-07-04)
 - **Depends on:** [SPEC-002](SPEC-002-analyzer.md) (the `signature` primitive),
   [SPEC-003](SPEC-003-cli.md) (CLI/exit codes), [SPEC-004](SPEC-004-report-render.md) (render)
 - **Modules:** `trends/store.py`, `trends/diff.py`, `trends/__init__.py`; render +
@@ -118,4 +118,6 @@ store contents.
   chooses an append-only local JSONL store, a new/recurring/regressed/fixed diff
   against a configurable baseline, a `yer trend` subcommand with `--record` /
   `--fail-on-new`, and an additive render layer that preserves SPEC-004
-  determinism. Status stays **Draft** until ratified.
+  determinism.
+- **2026-07-04 (ratified):** Status Draft → Approved. Scope accepted as written;
+  M6 tasks may now be generated.

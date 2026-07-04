@@ -64,7 +64,7 @@ leverage output. HTML, SARIF, and trends follow.
 
 ### M6 — Trends (stretch)
 - Signature store, cross-build diff, regression/new/fixed views. See
-  [SPEC-006](specs/SPEC-006-trends.md) (Draft — ratify before implementing).
+  [SPEC-006](specs/SPEC-006-trends.md) (Approved).
 
 ## Tracking
 
