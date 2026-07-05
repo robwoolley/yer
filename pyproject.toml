@@ -31,8 +31,9 @@ Changelog = "https://github.com/robwoolley/yer/blob/main/CHANGELOG.md"
 Issues = "https://github.com/robwoolley/yer/issues"
 
 [project.optional-dependencies]
-# pyyaml: validate the docs/ci.md workflow; build+hatchling: hermetic packaging test.
-dev = ["pytest", "ruff", "mypy", "pyyaml", "build", "hatchling"]
+# pyyaml: validate the docs/ci.md workflow; build+hatchling: hermetic packaging
+# test; twine: metadata/long-description check (SPEC-007 §3).
+dev = ["pytest", "ruff", "mypy", "pyyaml", "build", "hatchling", "twine"]
 
 [project.scripts]
 yer = "yer.cli:main"

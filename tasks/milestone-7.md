@@ -28,7 +28,7 @@ not a runtime code module — core `parse`/`analyze`/`models` are untouched.
     point) and **T6** (no `error_report_*.txt`, `.yer/`, or `redactions.local` in
     either artifact).
 
-- [ ] **M7-02 — Validate the distribution (`twine check` + clean install)**
+- [x] **M7-02 — Validate the distribution (`twine check` + clean install)**
   - Spec: SPEC-007 §3, §2.
   - Run `twine check dist/*` (metadata + README long-description) and smoke-test a
     clean-venv install of the wheel.

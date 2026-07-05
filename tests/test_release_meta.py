@@ -8,41 +8,16 @@ Acceptance tests copied from SPEC-007 §8:
         (`error_report_*.txt`), a `.yer/` trend store, or `redactions.local`.
 
 Building is heavier than a unit test, so these are marked `slow` (they still run
-in CI, which is not deselected). The build uses `--no-isolation` when the
-backend (hatchling) is importable — the fast, hermetic path CI takes via the dev
-extras — and otherwise falls back to an isolated build.
+in CI, which is not deselected). The `built_dist` fixture (in conftest.py) builds
+the sdist + wheel once per session.
 """
 
-import subprocess
-import sys
 import tarfile
 import zipfile
-from pathlib import Path
 
 import pytest
 
-REPO = Path(__file__).resolve().parent.parent
-
 pytestmark = pytest.mark.slow
-
-
-@pytest.fixture(scope="module")
-def dist(tmp_path_factory):
-    """Build sdist + wheel once; return (wheel_path, sdist_path)."""
-    out = tmp_path_factory.mktemp("dist")
-    cmd = [sys.executable, "-m", "build", "--outdir", str(out)]
-    try:
-        import hatchling  # noqa: F401  -- backend present -> skip isolation (fast, offline)
-
-        cmd.insert(3, "--no-isolation")
-    except ImportError:
-        pass  # fall back to an isolated build (fetches the backend)
-    proc = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)
-    assert proc.returncode == 0, f"build failed:\n{proc.stdout}\n{proc.stderr}"
-    wheels = list(out.glob("*.whl"))
-    sdists = list(out.glob("*.tar.gz"))
-    assert len(wheels) == 1 and len(sdists) == 1, list(out.iterdir())
-    return wheels[0], sdists[0]
 
 
 def _is_host_data(name: str) -> bool:
@@ -56,8 +31,8 @@ def _is_host_data(name: str) -> bool:
     )
 
 
-def test_t1_build_produces_wheel_with_template_and_entry_point(dist):
-    wheel, sdist = dist
+def test_t1_build_produces_wheel_with_template_and_entry_point(built_dist):
+    wheel, sdist = built_dist
     assert wheel.name.startswith("yer-") and wheel.name.endswith(".whl")
     assert sdist.name.startswith("yer-") and sdist.name.endswith(".tar.gz")
     names = zipfile.ZipFile(wheel).namelist()
@@ -70,8 +45,8 @@ def test_t1_build_produces_wheel_with_template_and_entry_point(dist):
     assert "yer = yer.cli:main" in text
 
 
-def test_t6_no_host_data_in_dists(dist):
-    wheel, sdist = dist
+def test_t6_no_host_data_in_dists(built_dist):
+    wheel, sdist = built_dist
     with zipfile.ZipFile(wheel) as zf:
         wheel_names = zf.namelist()
     with tarfile.open(sdist) as tf:
@@ -82,9 +57,9 @@ def test_t6_no_host_data_in_dists(dist):
     assert not sdist_leaks, f"host data in sdist: {sdist_leaks}"
 
 
-def test_metadata_is_pypi_ready(dist):
+def test_metadata_is_pypi_ready(built_dist):
     # §2: complete project URLs + a release-appropriate Development Status.
-    wheel, _ = dist
+    wheel, _ = built_dist
     names = zipfile.ZipFile(wheel).namelist()
     metadata_name = next(n for n in names if n.endswith(".dist-info/METADATA"))
     metadata = zipfile.ZipFile(wheel).read(metadata_name).decode()
