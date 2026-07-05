@@ -1,4 +1,4 @@
-# yocto-error-reports (`yer`)
+# `yer` — Yocto error-report analyzer
 
 A command-line tool that reads Yocto/OpenEmbedded `error-report.txt` files,
 **highlights the errors, failures, and anomalies** in the embedded build logs,

@@ -13,8 +13,8 @@ Task id format `M0-nn`. Each task cites its spec and a definition of done (DoD).
 
 - [x] **M0-01 — Package skeleton & `pyproject.toml`**
   - Spec: SPEC-000 §6 (NFR1), architecture §"Package layout".
-  - Create `yocto_error_reports/` package, `pyproject.toml` with
-    `console_scripts: yer = yocto_error_reports.cli:main`, Python `>=3.11`.
+  - Create `yer/` package, `pyproject.toml` with
+    `console_scripts: yer = yer.cli:main`, Python `>=3.11`.
   - DoD: `pipx install .` then `yer --version` prints a version.
 
 - [x] **M0-02 — Data model (`models.py`)**

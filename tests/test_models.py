@@ -10,7 +10,7 @@ This test pins the field names so later stages code against a stable contract.
 
 import dataclasses
 
-from yocto_error_reports import models
+from yer import models
 
 
 def _field_names(cls) -> set[str]:

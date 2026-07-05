@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports.cli import main
-from yocto_error_reports.trends.store import load_runs
+from yer.cli import main
+from yer.trends.store import load_runs
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 CONFIGURE = str(FIXTURES / "configure_gz-gui9.json")

@@ -7,10 +7,10 @@ Plus: host-identity structure never appears in a summary of unscrubbed input.
 
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Build, Failure
-from yocto_error_reports.summarize import summarize, to_json, to_markdown
+from yer import ingest
+from yer.analyze import analyze
+from yer.models import Build, Failure
+from yer.summarize import summarize, to_json, to_markdown
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
@@ -43,7 +43,7 @@ def test_host_identity_redacted_from_evidence():
 
 
 def test_ssh_auth_sock_value_redacted():
-    from yocto_error_reports.redact import redact_host_identity
+    from yer.redact import redact_host_identity
 
     line = 'export SSH_AUTH_SOCK="/folk/rwoolley/.gnupg/S.gpg-agent.ssh"; other'
     out = redact_host_identity(line)

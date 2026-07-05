@@ -8,7 +8,7 @@ is preserved so distinct recipes do not falsely merge.
 
 from pathlib import Path
 
-from yocto_error_reports import ingest, parse
+from yer import ingest, parse
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

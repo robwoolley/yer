@@ -8,14 +8,14 @@ stays self-contained (T2).
 import re
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.cli import main
-from yocto_error_reports.models import Finding, Report
-from yocto_error_reports.render.json_out import to_report_json
-from yocto_error_reports.render.static import to_html
-from yocto_error_reports.trends.diff import diff
-from yocto_error_reports.trends.store import load_runs, record_run
+from yer import ingest
+from yer.analyze import analyze
+from yer.cli import main
+from yer.models import Finding, Report
+from yer.render.json_out import to_report_json
+from yer.render.static import to_html
+from yer.trends.diff import diff
+from yer.trends.store import load_runs, record_run
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 _ASSET_URL = re.compile(r'(?:href|src)\s*=\s*["\']https?://', re.IGNORECASE)

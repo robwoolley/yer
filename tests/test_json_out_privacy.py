@@ -6,9 +6,9 @@ host-identity structure — even when the input report is unscrubbed.
 
 import json
 
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Build, Failure
-from yocto_error_reports.render.json_out import to_report_json
+from yer.analyze import analyze
+from yer.models import Build, Failure
+from yer.render.json_out import to_report_json
 
 
 def test_host_identity_redacted_from_report_json():

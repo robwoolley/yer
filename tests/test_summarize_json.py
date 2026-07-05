@@ -8,10 +8,10 @@ Acceptance test copied from SPEC-005 §5:
 import json
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Report
-from yocto_error_reports.summarize import summarize, to_json
+from yer import ingest
+from yer.analyze import analyze
+from yer.models import Report
+from yer.summarize import summarize, to_json
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

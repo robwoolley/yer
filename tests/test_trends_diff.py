@@ -11,9 +11,9 @@ Acceptance tests copied from SPEC-006 §6:
 
 from pathlib import Path
 
-from yocto_error_reports.models import Finding, Report
-from yocto_error_reports.trends.diff import build_history, diff, to_trend_json
-from yocto_error_reports.trends.store import load_runs, record_run
+from yer.models import Finding, Report
+from yer.trends.diff import build_history, diff, to_trend_json
+from yer.trends.store import load_runs, record_run
 
 
 def _report(*signatures: str) -> Report:

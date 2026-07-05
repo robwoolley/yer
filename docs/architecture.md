@@ -64,7 +64,7 @@ paste). **No network calls.** See [SPEC-005](specs/SPEC-005-llm-summary.md).
 ## Package layout
 
 ```
-yocto_error_reports/
+yer/
   __init__.py
   models.py          # Build, Failure, LogLine, Finding, Summary, Report
   ingest.py
@@ -84,7 +84,7 @@ yocto_error_reports/
 tests/
   fixtures/          # anonymized *.json samples + expected/*.json golden files
   test_*.py
-pyproject.toml       # console_scripts: yer = yocto_error_reports.cli:main
+pyproject.toml       # console_scripts: yer = yer.cli:main
 ```
 
 ## The data model (contract between stages)

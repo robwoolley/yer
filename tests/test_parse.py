@@ -8,8 +8,8 @@ Acceptance test copied from SPEC-001 §4:
 import time
 from pathlib import Path
 
-from yocto_error_reports import ingest, parse
-from yocto_error_reports.models import LogLine
+from yer import ingest, parse
+from yer.models import LogLine
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

@@ -9,7 +9,7 @@ Verify the current build of the tool against the **real sample corpus** in
 Do **not** fix anything in this command — this is a report-only health check.
 
 1. Determine how to invoke the tool (installed `yer`, or
-   `python -m yocto_error_reports` if not yet installed). If no runnable entry
+   `python -m yer` if not yet installed). If no runnable entry
    point exists yet, say so and stop.
 2. Run analysis over **every** file in `error-reports/*.txt` (pass through any
    extra flags in `$ARGUMENTS`). Capture failures per file.

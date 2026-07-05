@@ -11,7 +11,7 @@
 pipx install .            # or: pip install -e .
 
 # Once published
-pipx install yocto-error-reports
+pipx install yer
 ```
 
 Requires **Python 3.11+**. The core has no third-party runtime dependencies;

@@ -14,8 +14,8 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports import ingest, parse
-from yocto_error_reports.models import Build
+from yer import ingest, parse
+from yer.models import Build
 
 CORPUS = Path(__file__).resolve().parent.parent / "error-reports"
 CORPUS_BUDGET_S = 5.0

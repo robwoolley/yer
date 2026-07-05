@@ -8,7 +8,7 @@ Plus the SPEC-003 §4 exit-code contract for the `analyze`/`report` subcommands.
 import json
 from pathlib import Path
 
-from yocto_error_reports.cli import main
+from yer.cli import main
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

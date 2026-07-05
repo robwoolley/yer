@@ -4,8 +4,8 @@
 > plan is visible, but **ratify SPEC-007 before running `/task M7-01`** — the
 > acceptance tests (and therefore these DoDs) may shift on review.
 
-**Goal:** make `yer` installable by its users — `pipx install
-yocto-error-reports` — via a tagged, reproducible, supply-chain-clean release.
+**Goal:** make `yer` installable by its users — `pipx install yer` — via a
+tagged, reproducible, supply-chain-clean release.
 Exit criteria: `python -m build` yields a valid sdist + wheel that install and
 run from a clean environment; a `v*` tag publishes to PyPI via Trusted
 Publishing (no stored secrets); the tag, `__version__`, and CHANGELOG agree; and

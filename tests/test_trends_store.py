@@ -10,10 +10,10 @@ Acceptance tests copied from SPEC-006 §6:
 
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Build, Failure
-from yocto_error_reports.trends.store import load_runs, record_run
+from yer import ingest
+from yer.analyze import analyze
+from yer.models import Build, Failure
+from yer.trends.store import load_runs, record_run
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

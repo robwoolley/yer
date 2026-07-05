@@ -6,9 +6,9 @@ root cause + file:line present.
 
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.summarize import summarize, to_markdown
+from yer import ingest
+from yer.analyze import analyze
+from yer.summarize import summarize, to_markdown
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
@@ -42,7 +42,7 @@ def test_markdown_reports_truncation():
 
 
 def test_markdown_empty_summary_is_safe():
-    from yocto_error_reports.models import Report
+    from yer.models import Report
 
     md = to_markdown(summarize(Report()))
     assert isinstance(md, str)

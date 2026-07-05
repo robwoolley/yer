@@ -7,10 +7,10 @@ and the affected recipes. Conservative v1 normalization (OQ1).
 
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.analyze.dedup import collapse_evidence, compute_signature
-from yocto_error_reports.models import Finding
+from yer import ingest
+from yer.analyze import analyze
+from yer.analyze.dedup import collapse_evidence, compute_signature
+from yer.models import Finding
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

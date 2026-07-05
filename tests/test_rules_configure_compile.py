@@ -8,10 +8,10 @@ Plus T1 across the compile/configure category fixtures.
 
 from pathlib import Path
 
-from yocto_error_reports import ingest, parse
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.analyze.rules import compile as compile_rule
-from yocto_error_reports.analyze.rules import configure
+from yer import ingest, parse
+from yer.analyze import analyze
+from yer.analyze.rules import compile as compile_rule
+from yer.analyze.rules import configure
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

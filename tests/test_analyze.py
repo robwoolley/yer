@@ -6,9 +6,9 @@ orchestrator does not change. Findings selection/ranking (root-cause vs cascade)
 and dedup groups arrive in later M2 tasks.
 """
 
-from yocto_error_reports.analyze import analyze, signatures
-from yocto_error_reports.analyze.signatures import Rule
-from yocto_error_reports.models import Build, Failure, Finding, Report
+from yer.analyze import analyze, signatures
+from yer.analyze.signatures import Rule
+from yer.models import Build, Failure, Finding, Report
 
 
 def _match_boom(failure, lines):

@@ -9,7 +9,7 @@ Acceptance tests copied from SPEC-003 §5:
 import json
 from pathlib import Path
 
-from yocto_error_reports.cli import main
+from yer.cli import main
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

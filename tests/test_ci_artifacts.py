@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports.cli import main
+from yer.cli import main
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 CORPUS = Path(__file__).resolve().parent.parent / "error-reports"

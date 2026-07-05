@@ -15,10 +15,10 @@ import json
 import re
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Build, Failure, Finding, Report
-from yocto_error_reports.render.sarif import to_sarif
+from yer import ingest
+from yer.analyze import analyze
+from yer.models import Build, Failure, Finding, Report
+from yer.render.sarif import to_sarif
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

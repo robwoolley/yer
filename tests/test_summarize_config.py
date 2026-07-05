@@ -6,9 +6,9 @@ Acceptance test copied from SPEC-005 §5:
 Uses a synthetic build config (never a real report) carrying a fake secret.
 """
 
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Build, Failure
-from yocto_error_reports.summarize import summarize, to_json, to_markdown
+from yer.analyze import analyze
+from yer.models import Build, Failure
+from yer.summarize import summarize, to_json, to_markdown
 
 _LOCAL_CONF = (
     'DISTRO = "poky"\n'

@@ -8,11 +8,11 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports import ingest, parse
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.analyze.evidence import MAX_EVIDENCE
-from yocto_error_reports.analyze.rules import fallback
-from yocto_error_reports.models import Failure
+from yer import ingest, parse
+from yer.analyze import analyze
+from yer.analyze.evidence import MAX_EVIDENCE
+from yer.analyze.rules import fallback
+from yer.models import Failure
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 CORPUS = Path(__file__).resolve().parent.parent / "error-reports"

@@ -14,9 +14,9 @@ Acceptance tests copied from SPEC-004 §5:
 import re
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.render.static import to_html
+from yer import ingest
+from yer.analyze import analyze
+from yer.render.static import to_html
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
@@ -55,7 +55,7 @@ def test_t4_finding_without_location_still_renders():
 def test_t5_long_lines_do_not_break_the_page():
     # Synthesize an overlong evidence line and an overlong title token; neither
     # may widen the page — evidence scrolls in its own container, text wraps.
-    from yocto_error_reports.models import Finding, Report
+    from yer.models import Finding, Report
 
     long_line = "x" * 4000
     long_token = "/" + "seg-" * 500 + "/CMakeLists.txt"
@@ -107,7 +107,7 @@ def test_t6_copy_payload_is_html_escaped():
 
 
 def test_empty_report_html_is_valid():
-    from yocto_error_reports.models import Report
+    from yer.models import Report
 
     html = to_html(Report(), tool_version="1.0.0")
     assert html.lstrip().lower().startswith("<!doctype html>")

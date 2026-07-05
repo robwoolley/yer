@@ -6,9 +6,9 @@ Acceptance test copied from SPEC-002 §7:
 
 from pathlib import Path
 
-from yocto_error_reports import ingest, parse
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.analyze.rules import patch
+from yer import ingest, parse
+from yer.analyze import analyze
+from yer.analyze.rules import patch
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

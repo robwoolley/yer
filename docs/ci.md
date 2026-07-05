@@ -44,7 +44,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install yer
-        run: pip install yocto-error-reports
+        run: pip install yer
 
       - name: Analyze error reports
         id: yer
@@ -104,7 +104,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install yer
-        run: pip install yocto-error-reports
+        run: pip install yer
 
       # restore the run history from the previous build and save the updated
       # store back (the key rolls forward each run so history accumulates).

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports.cli import main
+from yer.cli import main
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 _IDENTITY = re.compile(r"rwoolley|/folk/|ala-lpggp|SSH_AUTH_SOCK=\"/")

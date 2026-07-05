@@ -7,9 +7,9 @@ Acceptance test copied from SPEC-004 §5:
 import json
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.render.json_out import to_report_json
+from yer import ingest
+from yer.analyze import analyze
+from yer.render.json_out import to_report_json
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
@@ -56,7 +56,7 @@ def test_findings_in_rank_order_and_occurrences_from_groups():
 
 
 def test_empty_report_json():
-    from yocto_error_reports.models import Report
+    from yer.models import Report
 
     data = json.loads(to_report_json(Report(), tool_version="1.0.0"))
     assert data["findings"] == [] and data["builds"] == []

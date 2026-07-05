@@ -7,8 +7,8 @@ paths are collapsed; ordering is deterministic; `-` reads one report from stdin.
 import io
 from pathlib import Path
 
-from yocto_error_reports import ingest
-from yocto_error_reports.models import Build
+from yer import ingest
+from yer.models import Build
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 N_REPORTS = 7  # *.json fixtures; README.md + derive_fixtures.py must be skipped

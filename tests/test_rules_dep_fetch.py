@@ -6,9 +6,9 @@ finding (part of SPEC-002 T1). Fixtures are the anonymized corpus samples.
 
 from pathlib import Path
 
-from yocto_error_reports import ingest, parse
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.analyze.rules import dependency, fetch
+from yer import ingest, parse
+from yer.analyze import analyze
+from yer.analyze.rules import dependency, fetch
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

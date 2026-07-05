@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Build, Failure
+from yer import ingest
+from yer.analyze import analyze
+from yer.models import Build, Failure
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 CORPUS = Path(__file__).resolve().parent.parent / "error-reports"
@@ -65,7 +65,7 @@ def test_t5_max_failure_report_bounded_and_ranked():
     report = analyze([biggest])
     assert len(report.findings) <= 22  # <=1 finding per failure, deduped
     # ranked: keys are non-decreasing
-    from yocto_error_reports.analyze.rank import rank_key
+    from yer.analyze.rank import rank_key
 
     keys = [rank_key(f) for f in report.findings]
     assert keys == sorted(keys)

@@ -11,8 +11,8 @@
 `yer` is feature-complete (M0–M6) but unreleased: it is not on PyPI, there is no
 `v0.1.0` tag (the CHANGELOG already links one that does not exist), and there is
 no repeatable release process. This milestone makes `yer` **installable by its
-users** — `pipx install yocto-error-reports` — with a tagged, reproducible,
-supply-chain-clean release flow.
+users** — `pipx install yer` — with a tagged, reproducible, supply-chain-clean
+release flow.
 
 Non-goals (v1): conda/distro packaging, signed OS packages, a hosted service.
 A reusable composite GitHub Action for consumers is a **fast-follow** (§6), not a
@@ -22,7 +22,7 @@ blocker for the first release.
 
 - **SemVer**, as the CHANGELOG already declares. `0.y.z` while pre-1.0: minor may
   break.
-- The version lives in **one place** — `yocto_error_reports/__init__.__version__`
+- The version lives in **one place** — `yer/__init__.__version__`
   (hatch `dynamic = ["version"]` already reads it). Nothing else hard-codes it.
 - A release bumps that string, moves the CHANGELOG `[Unreleased]` block to a new
   `[X.Y.Z] — <date>` section, and tags `vX.Y.Z`. The tag is the trigger; the
@@ -30,6 +30,9 @@ blocker for the first release.
 
 ## 2. Package metadata (PyPI-ready)
 
+- **Distribution name is `yer`** — matching the import package (`yer/`) and the
+  console script, so `pip install yer` and `import yer` agree. (`pyproject.toml`
+  `name = "yer"`.)
 - `readme = "README.md"` renders as the PyPI long description; it MUST render
   cleanly (no broken relative image/links that assume the repo tree).
 - `project.urls` carries **Homepage**, **Repository**, **Changelog**, and
@@ -56,19 +59,43 @@ blocker for the first release.
 
 ## 4. Publishing (Trusted Publishing, no stored secrets)
 
-- Publish from `.github/workflows/release.yml` on a `v*` tag using **PyPI Trusted
-  Publishing (OIDC)** via `pypa/gh-action-pypi-publish` — **no API token stored
-  in the repo or org secrets** (matches the project's no-secrets posture).
-- The publish job declares `permissions: id-token: write` and runs in a protected
-  `environment: pypi`; the build job needs no elevated permissions.
-- **Idempotent:** republishing an already-present version fails the job rather
-  than silently overwriting (`skip-existing` only for a TestPyPI dry run, never
-  for the real index).
-- **TestPyPI dry run** (optional gate): publish to TestPyPI on a pre-release tag
-  (`vX.Y.Zrc*`) before the real index.
-- Prerequisite (one-time, documented in `docs/releasing.md`): the
-  `yocto-error-reports` name is reserved on PyPI/TestPyPI and the Trusted
-  Publisher (repo + workflow) is registered.
+Publishing is handled by `.github/workflows/release.yml`. It uses **PyPI Trusted
+Publishing (OIDC)** via `pypa/gh-action-pypi-publish` — **no API token is stored
+in the repo or org secrets** (matches the project's no-secrets posture).
+
+### When it publishes
+
+- **Only on a version tag.** The workflow's single trigger is
+  `on: push: tags: ["v*"]`. Ordinary pushes and pull requests never publish —
+  they run the normal `ci.yml` (lint/type/test) instead.
+- A maintainer starts a release by pushing an **annotated, DCO-signed tag**
+  `vX.Y.Z` (see `docs/releasing.md`). The tag is the *only* thing that triggers a
+  release; CI never mutates the working tree or creates tags itself.
+- A pre-release tag `vX.Y.Zrc*` publishes to **TestPyPI** (dry-run gate); a final
+  `vX.Y.Z` publishes to **PyPI**.
+
+### How it publishes (step by step)
+
+1. **Guard** — the release-consistency check (§5) confirms the tag equals
+   `__version__` and the newest dated CHANGELOG version; a mismatch fails the run
+   before anything is published.
+2. **Build once** — one job runs `python -m build` (sdist + wheel) and
+   `twine check`, then uploads the `dist/` as a workflow artifact. This job has no
+   elevated permissions.
+3. **Publish** — a separate job downloads that artifact and calls
+   `pypa/gh-action-pypi-publish`. It declares `permissions: id-token: write` and
+   runs in a protected `environment: pypi`, so PyPI authenticates the workflow via
+   short-lived OIDC — there is no long-lived token to leak. It is **idempotent**:
+   republishing an existing version fails rather than overwriting (`skip-existing`
+   is used only for the TestPyPI dry run, never for the real index).
+4. **Release notes** — the workflow creates a **GitHub Release** for the tag whose
+   body is that version's CHANGELOG section, and attaches the built sdist + wheel.
+
+### Prerequisite (one-time, in `docs/releasing.md`)
+
+The `yer` name is reserved on PyPI and TestPyPI, and each index has a **Trusted
+Publisher** registered for this repository + the `release.yml` workflow +
+environment. No secret is stored in GitHub for this to work.
 
 ## 5. Release consistency & provenance of notes
 
@@ -96,7 +123,7 @@ tag. Deferred out of the first release but tracked here for continuity.
 ## 8. Acceptance tests
 
 - **T1** `python -m build` produces an sdist and a wheel; the wheel contains
-  `yocto_error_reports/render/templates/report.html.j2` and declares the `yer`
+  `yer/render/templates/report.html.j2` and declares the `yer`
   console-script entry point.
 - **T2** Installing the built **wheel** into a clean virtualenv exposes
   `yer --version` equal to `__version__`, and `yer analyze <fixture>` runs
@@ -113,6 +140,12 @@ tag. Deferred out of the first release but tracked here for continuity.
 
 ## Changelog
 
+- **2026-07-05 (rename + publish docs):** The distribution is named **`yer`**
+  (not `yocto-error-reports`), matching the renamed import package `yer/` and the
+  console script; §2 states this and all examples use `pipx install yer`.
+  Expanded §4 with explicit **"when it publishes"** (only on a `v*` tag; `rc*` →
+  TestPyPI, final → PyPI) and **"how it publishes"** (guard → build-once →
+  OIDC publish → GitHub Release) documentation.
 - **2026-07-04 (M7 authoring):** Initial draft. Centers the milestone on a
   tag-triggered PyPI release via Trusted Publishing (OIDC, no stored secrets),
   with build-once/publish, `twine check`, a tag/`__version__`/CHANGELOG

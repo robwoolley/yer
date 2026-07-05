@@ -8,8 +8,8 @@ import re
 
 import pytest
 
-from yocto_error_reports import __version__
-from yocto_error_reports.cli import main
+from yer import __version__
+from yer.cli import main
 
 _SEMVER = re.compile(r"\d+\.\d+\.\d+")
 

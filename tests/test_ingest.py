@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports import ingest
-from yocto_error_reports.models import Build
+from yer import ingest
+from yer.models import Build
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 ALL_FIXTURES = sorted(FIXTURES.glob("*.json"))

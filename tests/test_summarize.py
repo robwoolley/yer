@@ -9,10 +9,10 @@ from pathlib import Path
 
 import pytest
 
-from yocto_error_reports import ingest
-from yocto_error_reports.analyze import analyze
-from yocto_error_reports.models import Report
-from yocto_error_reports.summarize import DEFAULT_BUDGET, estimate_tokens, summarize
+from yer import ingest
+from yer.analyze import analyze
+from yer.models import Report
+from yer.summarize import DEFAULT_BUDGET, estimate_tokens, summarize
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 CORPUS = Path(__file__).resolve().parent.parent / "error-reports"
