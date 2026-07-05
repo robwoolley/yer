@@ -36,7 +36,7 @@ not a runtime code module — core `parse`/`analyze`/`models` are untouched.
     (installing the wheel into a fresh virtualenv gives `yer --version ==
     __version__` and `yer analyze <fixture>` runs end-to-end).
 
-- [ ] **M7-03 — Release-consistency check**
+- [x] **M7-03 — Release-consistency check**
   - Spec: SPEC-007 §1, §5.
   - A test asserting the release tag (when building from one), `__version__`, and
     the newest dated `CHANGELOG.md` version are identical — no release without a
