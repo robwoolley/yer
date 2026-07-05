@@ -1,9 +1,5 @@
 # Milestone 7 — Release & Distribution (PyPI)
 
-> ⚠️ **SPEC-007 is currently _Draft_.** These tasks are derived from it so the
-> plan is visible, but **ratify SPEC-007 before running `/task M7-01`** — the
-> acceptance tests (and therefore these DoDs) may shift on review.
-
 **Goal:** make `yer` installable by its users — `pipx install yer` — via a
 tagged, reproducible, supply-chain-clean release.
 Exit criteria: `python -m build` yields a valid sdist + wheel that install and

@@ -1,6 +1,6 @@
 # SPEC-007 — Release & Distribution (PyPI)
 
-- **Status:** Draft (M7 candidate; ratify before implementing)
+- **Status:** Approved (2026-07-05)
 - **Depends on:** [SPEC-000](SPEC-000-overview.md) (NFR1 packaging / `yer` console
   script), [SPEC-003](SPEC-003-cli.md) (the CLI surface being shipped)
 - **Artifacts:** `pyproject.toml` (metadata), `.github/workflows/release.yml`,
@@ -140,6 +140,10 @@ tag. Deferred out of the first release but tracked here for continuity.
 
 ## Changelog
 
+- **2026-07-05 (ratified):** Status Draft → Approved. Scope accepted as written
+  (distribution `yer`; tag-triggered PyPI publish via Trusted Publishing; the
+  version/CHANGELOG consistency gate; no-host-data-ships check); M7 tasks may now
+  be implemented.
 - **2026-07-05 (rename + publish docs):** The distribution is named **`yer`**
   (not `yocto-error-reports`), matching the renamed import package `yer/` and the
   console script; §2 states this and all examples use `pipx install yer`.

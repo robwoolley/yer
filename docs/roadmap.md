@@ -72,7 +72,7 @@ leverage output. HTML, SARIF, and trends follow.
   tag-triggered publish workflow using Trusted Publishing (OIDC, no stored
   secrets), a tag/`__version__`/CHANGELOG consistency gate, and a
   no-host-data-ships check. See [SPEC-007](specs/SPEC-007-release.md)
-  (Draft — ratify before implementing).
+  (Approved).
 
 ## Tracking
 
