@@ -17,7 +17,7 @@ not a runtime code module — core `parse`/`analyze`/`models` are untouched.
 
 ---
 
-- [ ] **M7-01 — PyPI-ready metadata + a correct distribution**
+- [x] **M7-01 — PyPI-ready metadata + a correct distribution**
   - Spec: SPEC-007 §2, §3, §7.
   - Complete `project.urls` (Homepage, Repository, Changelog, Issues), bump the
     `Development Status` classifier (`2 - Pre-Alpha` → release-appropriate), and

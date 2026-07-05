@@ -12,7 +12,7 @@ license-files = ["LICENSE"]
 authors = [{ name = "Rob Woolley", email = "rob@robertwoolley.com" }]
 keywords = ["yocto", "openembedded", "bitbake", "ci", "build-errors", "logs"]
 classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
+  "Development Status :: 3 - Alpha",
   "Environment :: Console",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
@@ -27,9 +27,12 @@ dependencies = ["jinja2>=3"]  # render/ only (HTML report); core stays stdlib-on
 [project.urls]
 Homepage = "https://github.com/robwoolley/yer"
 Repository = "https://github.com/robwoolley/yer"
+Changelog = "https://github.com/robwoolley/yer/blob/main/CHANGELOG.md"
+Issues = "https://github.com/robwoolley/yer/issues"
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff", "mypy", "pyyaml"]  # pyyaml: validate the docs/ci.md workflow
+# pyyaml: validate the docs/ci.md workflow; build+hatchling: hermetic packaging test.
+dev = ["pytest", "ruff", "mypy", "pyyaml", "build", "hatchling"]
 
 [project.scripts]
 yer = "yer.cli:main"
