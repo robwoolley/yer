@@ -56,6 +56,7 @@ $ yer trend error-reports/*.txt --store .yer/trends.jsonl --record --fail-on-new
 | --- | --- |
 | [docs/quickstart.md](docs/quickstart.md) | Install and first run (dev + CI). |
 | [docs/ci.md](docs/ci.md) | CI recipes: exit codes, SARIF upload, trend gating. |
+| [docs/releasing.md](docs/releasing.md) | Maintainer runbook: how to publish `yer` to PyPI. |
 | [docs/architecture.md](docs/architecture.md) | The five-stage pipeline and module layout. |
 | [docs/roadmap.md](docs/roadmap.md) | Milestones and the development plan. |
 | [docs/data-format.md](docs/data-format.md) | Reference for the `error-report.txt` format. |

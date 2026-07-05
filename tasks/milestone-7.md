@@ -55,7 +55,7 @@ not a runtime code module — core `parse`/`analyze`/`models` are untouched.
     trigger, OIDC Trusted Publishing with no `password:`/token secret,
     `id-token: write`, the `pypi` environment, and build-once/publish structure.
 
-- [ ] **M7-05 — Cut v0.1.0 + document the release process**
+- [x] **M7-05 — Cut v0.1.0 + document the release process**
   - Spec: SPEC-007 §1, §4, §5.
   - `docs/releasing.md`: the one-time PyPI/TestPyPI name reservation + Trusted
     Publisher registration, and the per-release steps (bump `__version__`, roll
