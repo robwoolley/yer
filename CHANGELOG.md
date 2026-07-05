@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Nothing yet._
 
-## [0.1.0] — 2026-07-04
+## [0.1.0] — 2026-07-05
 
 First implemented release. The full `ingest → parse → analyze → summarize →
 render` pipeline plus cross-run trends, built spec-first (milestones M0–M6),
