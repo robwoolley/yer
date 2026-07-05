@@ -65,20 +65,27 @@ in the repo or org secrets** (matches the project's no-secrets posture).
 
 ### When it publishes
 
-- **Only on a version tag.** The workflow's single trigger is
-  `on: push: tags: ["v*"]`. Ordinary pushes and pull requests never publish —
-  they run the normal `ci.yml` (lint/type/test) instead.
-- A maintainer starts a release by pushing an **annotated, DCO-signed tag**
-  `vX.Y.Z` (see `docs/releasing.md`). The tag is the *only* thing that triggers a
-  release; CI never mutates the working tree or creates tags itself.
-- A pre-release tag `vX.Y.Zrc*` publishes to **TestPyPI** (dry-run gate); a final
-  `vX.Y.Z` publishes to **PyPI**.
+- **PyPI: only on a version tag.** A final `vX.Y.Z` tag push is the *only* thing
+  that publishes to the real index. Ordinary pushes and pull requests never
+  publish — they run `ci.yml` (lint/type/test) instead. A maintainer starts a
+  release by pushing an **annotated, DCO-signed tag** `vX.Y.Z` (see
+  `docs/releasing.md`); CI never mutates the working tree or creates tags itself.
+- **TestPyPI via a pre-release tag.** A `vX.Y.Zrc*` tag publishes to **TestPyPI**
+  (a real PEP 440 pre-release: `__version__`/CHANGELOG must equal the rc version,
+  so the consistency guard passes).
+- **TestPyPI via manual dispatch (bump-free smoke).** The workflow also accepts
+  `workflow_dispatch`: a maintainer can run it by hand to build the current tree
+  and publish to **TestPyPI** (`skip-existing`) with no tag and no version bump —
+  a pipeline/OIDC smoke test. A manual run **skips the consistency guard** (there
+  is no release tag) and **never** runs the PyPI publish or GitHub Release jobs;
+  those are restricted to tag pushes.
 
 ### How it publishes (step by step)
 
-1. **Guard** — the release-consistency check (§5) confirms the tag equals
-   `__version__` and the newest dated CHANGELOG version; a mismatch fails the run
-   before anything is published.
+1. **Guard** — for **tag** triggers, the release-consistency check (§5) confirms
+   the tag equals `__version__` and the newest dated CHANGELOG version; a mismatch
+   fails the run before anything is published. A manual `workflow_dispatch` smoke
+   skips this step (it has no release tag).
 2. **Build once** — one job runs `python -m build` (sdist + wheel) and
    `twine check`, then uploads the `dist/` as a workflow artifact. This job has no
    elevated permissions.
@@ -130,9 +137,12 @@ tag. Deferred out of the first release but tracked here for continuity.
   end-to-end (proves the template and entry point ship correctly).
 - **T3** `twine check dist/*` passes (valid metadata; README renders as the long
   description).
-- **T4** The release workflow triggers only on a `v*` tag, builds once, and
-  publishes via OIDC Trusted Publishing with no stored API token; publishing an
-  already-existing version fails rather than overwriting.
+- **T4** The release workflow triggers on a `v*` tag (and manual
+  `workflow_dispatch`), builds once, and publishes via OIDC Trusted Publishing
+  with no stored API token; publishing an already-existing version fails rather
+  than overwriting. A manual `workflow_dispatch` run publishes **only** to
+  TestPyPI — the PyPI publish and GitHub Release jobs are restricted to tag
+  pushes.
 - **T5** Release-consistency: the `v*` tag, `__version__`, and the newest dated
   CHANGELOG version are identical (the check fails the release otherwise).
 - **T6** Neither the sdist nor the wheel contains any corpus report
@@ -140,6 +150,12 @@ tag. Deferred out of the first release but tracked here for continuity.
 
 ## Changelog
 
+- **2026-07-05 (TestPyPI smoke):** §4 — added a bump-free `workflow_dispatch`
+  path that builds the current tree and publishes to TestPyPI (skip-existing),
+  skipping the consistency guard and never running the PyPI/GitHub-Release jobs
+  (those stay tag-only). Extended T4 to assert manual runs are TestPyPI-only.
+  Rationale: let maintainers smoke-test the publish pipeline + OIDC + TestPyPI
+  setup without minting a version.
 - **2026-07-05 (ratified):** Status Draft → Approved. Scope accepted as written
   (distribution `yer`; tag-triggered PyPI publish via Trusted Publishing; the
   version/CHANGELOG consistency gate; no-host-data-ships check); M7 tasks may now

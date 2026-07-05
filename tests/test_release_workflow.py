@@ -24,12 +24,29 @@ def test_workflow_exists():
     assert WORKFLOW.is_file(), "expected .github/workflows/release.yml"
 
 
-def test_triggers_only_on_version_tag():
+def test_triggers_on_version_tag_and_manual_dispatch():
     doc = _doc()
     # YAML 1.1 parses the `on:` key as the boolean True; accept either form.
     triggers = doc.get(True, doc.get("on"))
-    assert list(triggers.keys()) == ["push"], "release must trigger only on push"
-    assert triggers["push"] == {"tags": ["v*"]}  # tags only, no branches
+    assert triggers["push"] == {"tags": ["v*"]}  # tag push, no branches
+    assert "workflow_dispatch" in triggers  # manual TestPyPI smoke
+
+
+def test_manual_dispatch_publishes_only_to_testpypi():
+    jobs = _doc()["jobs"]
+    testpypi_if = jobs["publish-testpypi"]["if"]
+    pypi_if = jobs["publish-pypi"]["if"]
+    # TestPyPI runs on a manual dispatch (or an rc tag)
+    assert "workflow_dispatch" in testpypi_if
+    # PyPI is restricted to tag pushes -> a manual run can never publish to PyPI
+    assert "tag" in pypi_if
+    assert "workflow_dispatch" not in pypi_if
+
+
+def test_guard_runs_only_for_tag_releases():
+    build_steps = _doc()["jobs"]["build"]["steps"]
+    guard = next(s for s in build_steps if "release_consistency.py" in (s.get("run") or ""))
+    assert "tag" in (guard.get("if") or "")  # skipped on a bump-free manual run
 
 
 def test_builds_once_then_publishes_from_the_artifact():

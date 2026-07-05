@@ -60,14 +60,26 @@ verifies against this publisher. Nothing long-lived exists to leak.
    `Signed-off-by: Rob Woolley <rob.woolley@windriver.com>`), then wait for CI to
    go green.
 
-5. **(Optional) TestPyPI dry run.** Tag a release candidate and push it:
+5. **(Optional) Test against TestPyPI.** Two ways, both requiring the one-time
+   TestPyPI setup (a Trusted Publisher on test.pypi.org + a `testpypi` GitHub
+   environment):
 
-   ```bash
-   git tag -a vX.Y.Zrc1 -m "yer X.Y.Z rc1" && git push origin vX.Y.Zrc1
-   ```
+   - **Bump-free smoke (easiest).** In GitHub → **Actions → Release → Run
+     workflow**, trigger it manually (`workflow_dispatch`). It builds the current
+     tree and uploads to TestPyPI (`skip-existing`) — **no tag, no version bump**,
+     and it never touches PyPI. Use this to verify the publish pipeline + OIDC +
+     your TestPyPI setup.
 
-   Watch the **Release** workflow; then confirm the upload at
-   `https://test.pypi.org/project/yer/` and try an install:
+   - **Real pre-release.** For a genuine `rc` on TestPyPI, first bump
+     `__version__` **and** the CHANGELOG to the rc version (e.g. `0.1.0rc1`) so
+     the consistency guard passes, then tag it:
+
+     ```bash
+     git tag -a vX.Y.Zrc1 -m "yer X.Y.Z rc1" && git push origin vX.Y.Zrc1
+     ```
+
+   Then confirm the upload at `https://test.pypi.org/project/yer/` and try an
+   install:
 
    ```bash
    pipx run --index-url https://test.pypi.org/simple/ \

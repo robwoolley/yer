@@ -1,12 +1,14 @@
 name: Release
 
-# Publishing is triggered ONLY by pushing a version tag (e.g. `git push origin
-# v0.1.0`). Ordinary pushes and PRs run ci.yml, never this. A `vX.Y.Zrc*` tag
-# publishes to TestPyPI (dry run); a final `vX.Y.Z` tag publishes to PyPI.
+# Publishing to PyPI is triggered ONLY by pushing a final version tag (e.g.
+# `git push origin v0.1.0`). Ordinary pushes and PRs run ci.yml, never this.
+# A `vX.Y.Zrc*` tag publishes to TestPyPI (real pre-release). A manual
+# `workflow_dispatch` run is a bump-free TestPyPI smoke — it never touches PyPI.
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch: {}
 
 permissions: {}  # least privilege; each job opts in to what it needs
 
@@ -24,6 +26,7 @@ jobs:
       - name: Install build tooling
         run: python -m pip install --upgrade build twine
       - name: Guard — tag == __version__ == newest CHANGELOG version
+        if: github.ref_type == 'tag'  # bump-free manual smoke has no release tag
         run: python scripts/release_consistency.py "${GITHUB_REF_NAME}"
       - name: Build sdist + wheel (once)
         run: python -m build
@@ -36,9 +39,9 @@ jobs:
           path: dist/
 
   publish-testpypi:
-    name: Publish to TestPyPI (pre-release)
+    name: Publish to TestPyPI (pre-release or manual smoke)
     needs: build
-    if: contains(github.ref_name, 'rc')
+    if: github.event_name == 'workflow_dispatch' || contains(github.ref_name, 'rc')
     runs-on: ubuntu-latest
     environment: testpypi
     permissions:
@@ -57,7 +60,8 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     needs: build
-    if: ${{ !contains(github.ref_name, 'rc') }}
+    # tag pushes only (never a manual dispatch), and not a pre-release
+    if: github.ref_type == 'tag' && !contains(github.ref_name, 'rc')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
