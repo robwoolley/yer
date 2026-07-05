@@ -13,10 +13,13 @@ import yaml
 CI_DOC = Path(__file__).resolve().parent.parent / "docs" / "ci.md"
 
 
-def _first_yaml_block(markdown: str) -> str:
-    match = re.search(r"```yaml\n(.*?)```", markdown, re.DOTALL)
-    assert match, "docs/ci.md must contain a ```yaml workflow block"
-    return match.group(1)
+def _report_block(markdown: str) -> str:
+    # the hand-written recipe (docs/ci.md has several yaml blocks now)
+    blocks = re.findall(r"```yaml\n(.*?)```", markdown, re.DOTALL)
+    for block in blocks:
+        if "yer report" in block:
+            return block
+    raise AssertionError("docs/ci.md must contain a ```yaml block invoking `yer report`")
 
 
 def test_ci_doc_exists():
@@ -32,7 +35,7 @@ def test_exit_code_table_documented():
 
 
 def test_workflow_yaml_parses_and_references_artifacts():
-    block = _first_yaml_block(CI_DOC.read_text(encoding="utf-8"))
+    block = _report_block(CI_DOC.read_text(encoding="utf-8"))
     doc = yaml.safe_load(block)  # parses as valid YAML
     assert "jobs" in doc  # a real workflow (note: `on:` parses as the bool key True)
 

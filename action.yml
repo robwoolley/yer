@@ -1,0 +1,79 @@
+name: "yer — Yocto error report"
+description: "Analyze Yocto error-report.txt files: publish an HTML + JSON report and SARIF code-scanning results."
+branding:
+  icon: "alert-triangle"
+  color: "orange"
+
+inputs:
+  reports:
+    description: "Path or glob to the error-report.txt files to analyze."
+    required: false
+    default: "error-reports/*.txt"
+  html-dir:
+    description: "Directory to write index.html + report.json into."
+    required: false
+    default: "yer-report"
+  sarif-file:
+    description: "Path to write the SARIF results to."
+    required: false
+    default: "results.sarif"
+  fail-on:
+    description: "Minimum severity that fails the run (error|failure|warning|none)."
+    required: false
+    default: "error"
+  upload-artifact:
+    description: "Upload the HTML + JSON report as a build artifact."
+    required: false
+    default: "true"
+  upload-sarif:
+    description: "Upload the SARIF file to GitHub code scanning."
+    required: false
+    default: "true"
+  python-version:
+    description: "Python version used to install yer."
+    required: false
+    default: "3.12"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install yer
+      shell: bash
+      run: python -m pip install yer
+
+    - name: Analyze error reports
+      id: yer
+      shell: bash
+      # Composite steps can't use continue-on-error, so capture the exit code and
+      # re-fail after the uploads (mirrors docs/ci.md).
+      run: |
+        set +e
+        yer report ${{ inputs.reports }} --html "${{ inputs.html-dir }}"
+        yer analyze ${{ inputs.reports }} --format sarif -o "${{ inputs.sarif-file }}" \
+          --fail-on "${{ inputs.fail-on }}"
+        echo "exit-code=$?" >> "$GITHUB_OUTPUT"
+        exit 0
+
+    - name: Upload HTML + JSON report
+      if: ${{ always() && inputs.upload-artifact == 'true' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: yer-report
+        path: ${{ inputs.html-dir }}
+
+    - name: Upload SARIF to code scanning
+      if: ${{ always() && inputs.upload-sarif == 'true' }}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.sarif-file }}
+
+    - name: Fail on findings
+      if: ${{ steps.yer.outputs.exit-code != '0' }}
+      shell: bash
+      run: |
+        echo "yer: findings at/above --fail-on (${{ inputs.fail-on }}) — see the report artifact."
+        exit ${{ steps.yer.outputs.exit-code }}

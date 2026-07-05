@@ -5,6 +5,32 @@ artifacts. This page documents the **exit-code contract** (SPEC-003 §4) and a
 copy-pasteable **GitHub Actions** recipe that publishes the HTML + JSON report
 and uploads SARIF for code-scanning annotations.
 
+## Quickest start: the composite action
+
+Instead of hand-copying the workflow below, use the bundled composite action —
+one `uses:` line does the whole recipe (install, report, SARIF, uploads, gate):
+
+```yaml
+jobs:
+  yocto-error-report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # required for the SARIF upload
+    steps:
+      - uses: actions/checkout@v4
+      - uses: robwoolley/yer@v0.1.0
+        with:
+          reports: build/tmp/log/error-report/*.txt   # defaults to error-reports/*.txt
+          fail-on: error                               # error|failure|warning|none
+```
+
+Inputs (all optional): `reports`, `html-dir`, `sarif-file`, `fail-on`,
+`upload-artifact`, `upload-sarif`, `python-version`. The action uploads the
+`html-dir` as a build artifact and pushes `sarif-file` to code scanning, then
+fails the job when there are findings at/above `fail-on`. Pin it to a release tag
+(`@v0.1.0`). The hand-written equivalent follows if you need more control.
+
 ## Exit-code contract (SPEC-003 §4)
 
 `yer analyze` / `yer report` return:

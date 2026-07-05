@@ -65,7 +65,7 @@ not a runtime code module — core `parse`/`analyze`/`models` are untouched.
     (M7-03), `twine check`, and the clean-install smoke (M7-02) are all green —
     the repo is one `git tag v0.1.0` away from publishing.
 
-- [ ] **M7-06 — (Fast-follow) reusable composite GitHub Action**
+- [x] **M7-06 — (Fast-follow) reusable composite GitHub Action**
   - Spec: SPEC-007 §6.
   - `action.yml` wrapping the `docs/ci.md` recipe (`yer report` + `yer analyze
     --format sarif` + artifact/SARIF upload) so consumers write one `uses:` line;
