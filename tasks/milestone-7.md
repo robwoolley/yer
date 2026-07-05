@@ -44,7 +44,7 @@ not a runtime code module — core `parse`/`analyze`/`models` are untouched.
   - DoD: **SPEC-007 T5** — the check passes for a consistent version trio and
     fails when they diverge.
 
-- [ ] **M7-04 — Tag-triggered publish workflow (Trusted Publishing)**
+- [x] **M7-04 — Tag-triggered publish workflow (Trusted Publishing)**
   - Spec: SPEC-007 §4, §5.
   - `.github/workflows/release.yml`: on a `v*` tag, build once, publish via PyPI
     **Trusted Publishing (OIDC)** (`pypa/gh-action-pypi-publish`, no stored
